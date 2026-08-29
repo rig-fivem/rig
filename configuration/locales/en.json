@@ -1,0 +1,15 @@
+{
+    "server": {
+        "user": {
+            "registry": {
+                "no_license": "No valid Rockstar license found. Please restart FiveM.",
+                "banned": "You are banned from this server.\nExpires/Type: %s\nReason: %s",
+                "checking": "Checking your identifiers...",
+                "creating": "Creating your account profile...",
+                "checking_bans": "Verifying security records...",
+                "ban_permanent": "Permanently Banned",
+                "ban_no_reason": "No reason provided"
+            }
+        }
+    }
+}
