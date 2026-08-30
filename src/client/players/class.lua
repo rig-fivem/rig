@@ -1,5 +1,5 @@
 --- @class Player
---- @file src/client/player/class.lua
+--- @file src/client/players/class.lua
 --- @description Handles client player class nothing special just a data store.
 
 --- @section Initialisation

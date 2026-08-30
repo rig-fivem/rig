@@ -1,10 +1,10 @@
 --- @class PlayerRegistry
---- @file src/server/player/registry.lua
+--- @file src/server/players/registry.lua
 --- @description Manages player objects for connected players.
 
 --- @section Imports
 
-local Player = require("src.server.player.class")
+local Player = require("src.server.players.class")
 
 --- @section Constants
 

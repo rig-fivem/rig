@@ -65,23 +65,6 @@ AddEventHandler("rig:server:request_avatar", function()
     TriggerEvent("rig:server:request_avatar_response", _src, avatar)
 end)
 
-RegisterServerEvent("rig:server:customise_avatar")
-AddEventHandler("rig:server:customise_avatar", function(data)
-    local _src = source
-    if not _src or type(data) ~= "table" then return end
-
-    local success = m.customise_avatar(_src, data)
-    if not success then
-        log("error", ("Failed to set avatar customization for source %s"):format(_src))
-        return
-    end
-
-    log("info", ("[Avatar] Player %s successfully saved avatar customization. Routing to spawn selector..."):format(_src))
-
-    local updated_avatar = m.request_avatar(_src)
-    TriggerEvent("rig:server:customise_avatar_response", _src, updated_avatar)
-end)
-
 --- @section Exports
 
 exports("request_avatar", m.request_avatar)

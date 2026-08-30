@@ -4,7 +4,7 @@
 
 --- @section Imports
 
-local User = require("src.server.user.class")
+local User = require("src.server.users.class")
 local _db = require("src.server.modules.database")
 local _utils = require("src.server.modules.utils")
 
@@ -54,17 +54,17 @@ function UserRegistry:request_connection(source, name, deferrals)
     local ids = _utils.get_identifiers(source)
     if not ids.license then
         log("warn", ("Connection rejected for source %d: missing license identifier"):format(source))
-        return deferrals.done(locale("server.user.registry.no_license"))
+        return deferrals.done(locale("server.users.registry.no_license"))
     end
 
     deferrals.defer()
-    update_deferral(deferrals, "src.server.user.registry.checking")
+    update_deferral(deferrals, "src.server.users.registry.checking")
 
     local result = self:exists(ids.license)
     local user_data = result and result[1]
 
     if not user_data then
-        update_deferral(deferrals, "src.server.user.registry.creating")
+        update_deferral(deferrals, "src.server.users.registry.creating")
         local uid = _db.generate_unique_id(core.settings.users.unique_id_chars, "users", "unique_id", nil)
         local username = core.settings.users.username_prefix .. "_" .. uid
         self:persist(username, name, uid, ids.license, ids.discord, GetPlayerTokens(source), ids.ip)
@@ -72,7 +72,7 @@ function UserRegistry:request_connection(source, name, deferrals)
         log("success", ("Created new user profile UID %s for %s"):format(uid, name))
     end
 
-    update_deferral(deferrals, "src.server.user.registry.checking_bans")
+    update_deferral(deferrals, "src.server.users.registry.checking_bans")
     local ban_query = "SELECT id, reason, expires_at FROM user_bans WHERE unique_id = ? AND expired = 0 ORDER BY created DESC LIMIT 1"
     local ban = exports.oxmysql:query_async(ban_query, { user_data.unique_id })
     local active_ban = ban and ban[1]
@@ -83,10 +83,10 @@ function UserRegistry:request_connection(source, name, deferrals)
             exports.oxmysql:query_async("UPDATE users SET banned = 0 WHERE unique_id = ?", { user_data.unique_id })
             log("info", ("Expired ban cleaned up for UID %s"):format(user_data.unique_id))
         else
-            local time_str = active_ban.expires_at and os.date("%Y-%m-%d %H:%M:%S", active_ban.expires_at / 1000) or locale("server.user.registry.ban_permanent")
-            local reason = active_ban.reason or locale("server.user.ban_no_reason")
+            local time_str = active_ban.expires_at and os.date("%Y-%m-%d %H:%M:%S", active_ban.expires_at / 1000) or locale("server.users.registry.ban_permanent")
+            local reason = active_ban.reason or locale("server.users.ban_no_reason")
             log("warn", ("Connection rejected for source %d (UID %s): active ban active"):format(source, user_data.unique_id))
-            return deferrals.done(locale("server.user.registry.banned", time_str, reason))
+            return deferrals.done(locale("server.users.registry.banned", time_str, reason))
         end
     end
 

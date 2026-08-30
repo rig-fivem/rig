@@ -1,5 +1,5 @@
 --- @class Spawn
---- @file src/server/player/extensions/spawn.lua
+--- @file src/server/players/extensions/spawn.lua
 --- @description Player spawn extension for managing spawn locations.
 
 --- @section Imports

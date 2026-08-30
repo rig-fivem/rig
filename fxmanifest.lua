@@ -32,7 +32,7 @@ shared_scripts {
 
 server_scripts {
     "src/server/modules/*.lua",
-    "src/server/player/extensions/*.lua",
+    "src/server/players/extensions/*.lua",
     "src/server/**/class.lua",
     "src/server/**/registry.lua",
     "src/server/gameplay.lua",

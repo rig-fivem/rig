@@ -1,6 +1,6 @@
 --- @section Imports
 
-local Player = require("src.client.player.class")
+local Player = require("src.client.players.class")
 
 --- @section Registries
 

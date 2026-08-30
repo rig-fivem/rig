@@ -3,7 +3,7 @@
 
 --- @section Imports
 
-local User = require("src.server.user.class")
+local User = require("src.server.users.class")
 local _cmds = require("src.server.modules.commands")
 local _utils = require("src.server.modules.utils")
 

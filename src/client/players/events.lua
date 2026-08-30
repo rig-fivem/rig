@@ -1,4 +1,4 @@
---- @file src/client/player/events.lua
+--- @file src/client/players/events.lua
 --- @description Handles client player events.
 
 --- @section Player States

@@ -1,5 +1,5 @@
 --- @class Statuses
---- @file src/server/player/extensions/statuses.lua
+--- @file src/server/players/extensions/statuses.lua
 --- @description Player status management handling vitals, targeted body injuries, and active effects.
 
 --- @section Imports
