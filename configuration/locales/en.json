@@ -10,6 +10,9 @@
                 "ban_permanent": "Permanently Banned",
                 "ban_no_reason": "No reason provided"
             }
+        },
+        "player": {
+            "disconnected": "You have disconnected from the server!"
         }
     }
 }

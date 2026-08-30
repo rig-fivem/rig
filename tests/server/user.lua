@@ -3,17 +3,18 @@
 
 --- @section Imports
 
-local User = require("core.server.user.class")
-local commands = require("core.server.modules.commands")
+local User = require("src.server.user.class")
+local _cmds = require("src.server.modules.commands")
+local _utils = require("src.server.modules.utils")
 
 --- @section Commands
 
-commands.register({
+_cmds.register_command({
     name = "testjoin",
     help = "Manually re-activates your user + player session after a core restart",
     handler = function(source)
         if not rig.users:get(source) then
-            local ids = User:get_identifiers(source)
+            local ids = _utils.get_identifiers(source)
             if not ids.license then
                 print(("[testjoin] No license identifier for source %d"):format(source))
                 return
@@ -40,7 +41,7 @@ commands.register({
     end
 })
 
-commands.register({
+_cmds.register_command({
     name = "testuser",
     help = "Prints your active User object's core fields",
     handler = function(source)
@@ -62,7 +63,7 @@ commands.register({
     end
 })
 
-commands.register({
+_cmds.register_command({
     name = "testidentifiers",
     help = "Prints identifiers for the current user",
     handler = function(source)
@@ -72,14 +73,14 @@ commands.register({
             return
         end
 
-        local ids = user:get_identifiers()
+        local ids = _utils.get_identifiers(_src)
         print(("[testidentifiers] license=%s discord=%s ip=%s"):format(
             tostring(ids.license), tostring(ids.discord), tostring(ids.ip)
         ))
     end
 })
 
-commands.register({
+_cmds.register_command({
     name = "testvip",
     help = "Sets your VIP level",
     params = { { name = "level", help = "VIP level (number)" } },
@@ -101,7 +102,7 @@ commands.register({
     end
 })
 
-commands.register({
+_cmds.register_command({
     name = "testusername",
     help = "Sets your username",
     params = { { name = "username", help = "New username" } },
@@ -123,7 +124,7 @@ commands.register({
     end
 })
 
-commands.register({
+_cmds.register_command({
     name = "testban",
     help = "Bans yourself for testing (careful!)",
     handler = function(source)

@@ -3,8 +3,8 @@
 RIG Framework (built for CFX Platforms)
 
 Author: Case (https://caseirl.dev)
-Repo: https://github.com/rig-framework/rig-cfx
-License: https://github.com/rig-framework/rig-cfx/blob/main/LICENSE
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 ----------------------------------------
 ]]
 
@@ -17,23 +17,36 @@ license "Apache 2.0"
 author "Case"
 lua54 "yes"
 
+ui_page "ui/index.html"
 files {
-    "configuration/locales/*.json"
+    "configuration/locales/*.json",
+    "configuration/data/*.json",
+    "ui/**/*",
 }
 
 shared_scripts {
-    "core/init.lua"
+    "src/init.lua"
 }
 
 server_scripts {
-    "core/server/modules/*.lua",
-
-    "core/server/**/class.lua",
-    "core/server/**/registry.lua",
-
-    "core/server/main.lua",
+    "src/server/modules/*.lua",
+    "src/server/player/extensions/*.lua",
+    "src/server/**/class.lua",
+    "src/server/**/registry.lua",
+    "src/server/gameplay.lua",
+    "src/server/main.lua",
 
     "tests/server/*.lua"
+}
+
+client_scripts {
+    "src/client/modules/*.lua",
+    "src/client/**/class.lua",
+    "src/client/**/events.lua",
+    "src/client/gameplay.lua",
+    "src/client/main.lua",
+
+    "tests/client/*.lua"
 }
 
 dependency "oxmysql"
