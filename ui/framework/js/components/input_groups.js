@@ -52,12 +52,14 @@ export class InputGroups {
 
         if (input.type === "number") {
             const max = input.max !== undefined ? input.max : 100;
+            const min = input.min !== undefined ? input.min : -1;
+            const default_value = input.value !== undefined ? input.value : -1;
             const dataset = { target: input.id, ...(input.category ? { category: input.category } : {}) };
             const dec = new Buttons({ buttons: [{ id: `${input.id}_dec`, label: "REMOVE", action: input.action, class: "input_button decrement", dataset }], classes: "input_group_inline" }).get_html();
             const inc = new Buttons({ buttons: [{ id: `${input.id}_inc`, label: "ADD", action: input.action, class: "input_button increment", dataset }], classes: "input_group_inline" }).get_html();
             return `<div class="input_pair">
                 <label for="${input.id}">${input.label || ""} <span>${copy_html}</span></label>
-                <div class="input_controls">${dec}<input id="${input.id}" class="group_input" type="number" min="-1" max="${max}" value="${input.value !== undefined ? input.value : 0}" data-max="${max}" />${inc} ${copy_html}</div>
+                <div class="input_controls">${dec}<input id="${input.id}" class="group_input" type="number" min="${min}" max="${max}" value="${default_value}" data-min="${min}" data-max="${max}" />${inc} ${copy_html}</div>
             </div>`;
         }
 

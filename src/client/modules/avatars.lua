@@ -207,10 +207,7 @@ function m.update_avatar_appearance(category, id, value)
     end
 
     if category == "tattoos" and id and type(value) == "table" then
-        if not m.avatar_styles[m.current_ped].tattoos[id] then
-            log("error", "Function: update_avatar_appearance failed | Reason: Invalid tattoo zone: " .. tostring(id))
-            return
-        end
+        m.avatar_styles[m.current_ped].tattoos = m.avatar_styles[m.current_ped].tattoos or {}
         m.avatar_styles[m.current_ped].tattoos[id] = value
         m.set_avatar_appearance(PlayerPedId(), m.avatar_styles[m.current_ped])
         return
@@ -354,16 +351,16 @@ function m.setup_avatar_creator(opts)
     end
 
     FreezeEntityPosition(player_ped, false)
-    local found, ground_z = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z + 1.0, false)
+    local found, ground_z = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z, false)
     local target_z = found and ground_z or coords.z
 
-    SetEntityCoords(player_ped, coords.x, coords.y, target_z, false, false, false, true)
+    SetEntityCoords(player_ped, coords.x, coords.y, target_z - 1.0, false, false, false, true)
     SetEntityHeading(player_ped, coords.w or coords.h or 0.0)
 
     timeout = GetGameTimer() + 2000
     while GetGameTimer() < timeout do
         local pos = GetEntityCoords(player_ped)
-        if #(pos - vector3(coords.x, coords.y, target_z)) < 1.0 then
+        if #(pos - vector3(coords.x, coords.y, target_z)) > 1.0 then
             break
         end
         Wait(0)

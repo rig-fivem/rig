@@ -75,7 +75,7 @@ return {
     styles = {
         mp_m_freemode_01 = {
             genetics = {
-                mother = 0, father = 0, resemblance = 0, skin = 0,
+                mother = -1, father = 0, resemblance = 0, skin = 0,
                 eye_colour = 1, eye_opening = 0, eyebrow_height = 0, eyebrow_depth = 0,
                 nose_width = 0, nose_peak_height = 0, nose_peak_length = 0, nose_bone_height = 0, nose_peak_lower = 0, nose_twist = 0,
                 cheek_bone = 0, cheek_bone_sideways = 0, cheek_bone_width = 0,
@@ -126,7 +126,7 @@ return {
         
         mp_f_freemode_01 = {
             genetics = {
-                mother = 0, father = 0, resemblance = 0, skin = 0,
+                mother = -1, father = 0, resemblance = 0, skin = 0,
                 eye_colour = 1, eye_opening = 0, eyebrow_height = 0, eyebrow_depth = 0,
                 nose_width = 0, nose_peak_height = 0, nose_peak_length = 0, nose_bone_height = 0, nose_peak_lower = 0, nose_twist = 0,
                 cheek_bone = 0, cheek_bone_sideways = 0, cheek_bone_width = 0,

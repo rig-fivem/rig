@@ -43,16 +43,14 @@ end
 
 function m.sanitize(data, path)
     path = path or "root"
-    local action_keys = { on_action = "action", on_increment = "on_increment", on_decrement = "on_decrement", on_select = "on_select" }
     local out = {}
 
     for k, v in pairs(data) do
         local p = ("%s_%s"):format(path, tostring(k)):gsub("[^%w_]", "")
 
-        local out_key = action_keys[k]
-        if out_key then
+        if (k == "on_action" or k == "on_increment" or k == "on_decrement" or k == "on_select") then
             m.register_function(p, v)
-            out[out_key] = p
+            out.action = p
         elseif type(v) == "table" then
             out[k] = m.sanitize(v, p)
         else
