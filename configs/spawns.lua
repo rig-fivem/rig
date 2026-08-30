@@ -1,5 +1,5 @@
 --- @module spawns
---- @file configuration/configs/spawns.lua
+--- @file configs/spawns.lua
 --- @description Handles all spawns related config settings
 
 return {

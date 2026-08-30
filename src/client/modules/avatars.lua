@@ -1,10 +1,10 @@
 --- @module avatars
---- @file src/server/modules/avatars.lua
---- @description Server side handling for player avatar system.
+--- @file src/client/modules/avatars.lua
+--- @description Client side handling for player avatar system.
 
 --- @section Imports
 
-local _cfg = require("configuration.configs.avatars")
+local _data = require("src.shared.data.avatars")
 local _cam = require("src.client.modules.camera")
 
 --- @section Guard
@@ -17,64 +17,6 @@ end
 
 local m = {}
 _G.__client_avatars_module = m
-
---- @section Constants
-
-local FACIAL_FEATURES = {
-    { index = 0, value = "nose_width" }, 
-    { index = 1, value = "nose_peak_height" }, 
-    { index = 2, value = "nose_peak_length" },
-    { index = 3, value = "nose_bone_height" }, 
-    { index = 4, value = "nose_peak_lower" }, 
-    { index = 5, value = "nose_twist" },
-    { index = 6, value = "eyebrow_height" }, 
-    { index = 7, value = "eyebrow_depth" }, 
-    { index = 8, value = "cheek_bone" },
-    { index = 9, value = "cheek_sideways_bone" }, 
-    { index = 10, value = "cheek_bone_width" },
-    { index = 11, value = "eye_opening" }, 
-    { index = 12, value = "lip_thickness" }, 
-    { index = 13, value = "jaw_bone_width" },
-    { index = 14, value = "jaw_bone_shape" }, 
-    { index = 15, value = "chin_bone" }, 
-    { index = 16, value = "chin_bone_length" },
-    { index = 17, value = "chin_bone_shape" }, 
-    { index = 18, value = "chin_hole" }, 
-    { index = 19, value = "neck_thickness" }
-}
-
-local OVERLAYS = {
-    { index = 2, style = "eyebrow", opacity = "eyebrow_opacity", colour = "eyebrow_colour" },
-    { index = 1, style = "facial_hair", opacity = "facial_hair_opacity", colour = "facial_hair_colour" },
-    { index = 10, style = "chest_hair", opacity = "chest_hair_opacity", colour = "chest_hair_colour" },
-    { index = 4, style = "make_up", opacity = "make_up_opacity", colour = "make_up_colour" },
-    { index = 5, style = "blush", opacity = "blush_opacity", colour = "blush_colour" },
-    { index = 8, style = "lipstick", opacity = "lipstick_opacity", colour = "lipstick_colour" },
-    { index = 0, style = "blemish", opacity = "blemish_opacity" },
-    { index = 11, style = "moles", opacity = "moles_opacity" },
-    { index = 3, style = "ageing", opacity = "ageing_opacity" },
-    { index = 6, style = "complexion", opacity = "complexion_opacity" },
-    { index = 7, style = "sun_damage", opacity = "sun_damage_opacity" },
-    { index = 9, style = "body_blemish", opacity = "body_blemish_opacity" }
-}
-
-local CLOTHING = {
-    { index = 1, style = "mask_style", texture = "mask_texture" },
-    { index = 11, style = "jacket_style", texture = "jacket_texture" },
-    { index = 8, style = "shirt_style", texture = "shirt_texture" },
-    { index = 9, style = "vest_style", texture = "vest_texture" },
-    { index = 4, style = "legs_style", texture = "legs_texture" },
-    { index = 6, style = "shoes_style", texture = "shoes_texture" },
-    { index = 3, style = "hands_style", texture = "hands_texture" },
-    { index = 5, style = "bag_style", texture = "bag_texture" },
-    { index = 10, style = "decals_style", texture = "decals_texture" },
-    { index = 7, style = "neck_style", texture = "neck_texture" },
-    { index = 0, style = "hats_style", texture = "hats_texture", is_prop = true },
-    { index = 1, style = "glasses_style", texture = "glasses_texture", is_prop = true },
-    { index = 2, style = "earwear_style", texture = "earwear_texture", is_prop = true },
-    { index = 6, style = "watches_style", texture = "watches_texture", is_prop = true },
-    { index = 7, style = "bracelets_style", texture = "bracelets_texture", is_prop = true }
-}
 
 --- @section Helpers
 
@@ -101,14 +43,14 @@ m.original_heading = nil
 m.current_ped = "mp_m_freemode_01"
 m.current_avatar_id = nil
 m.appearance_ranges = nil
-m.avatar_styles = copy_table(_cfg.styles or _cfg.defaults or {})
+m.avatar_styles = copy_table(_data.styles or {})
 
 --- @section Functions
 
 function m.reset_avatar_style(ped_model)
     ped_model = ped_model or m.current_ped
-    if _cfg.defaults and _cfg.defaults[ped_model] then
-        m.avatar_styles[ped_model] = copy_table(_cfg.defaults[ped_model])
+    if _data.styles[ped_model] then
+        m.avatar_styles[ped_model] = copy_table(_data.styles[ped_model])
     end
     return m.avatar_styles[ped_model]
 end
@@ -210,15 +152,15 @@ function m.set_avatar_appearance(player, data)
     SetPedComponentVariation(player, 2, barber.hair, 0, 0)
     SetPedHairColor(player, barber.hair_colour, barber.highlight_colour)
 
-    for _, feature in ipairs(FACIAL_FEATURES) do
+    for _, feature in ipairs(_data.constants.facial_features) do
         SetPedFaceFeature(player, feature.index, tonumber(genetics[feature.value]) or 0)
     end
 
-    for _, overlay in ipairs(OVERLAYS) do
+    for _, overlay in ipairs(_data.constants.overlays) do
         m.apply_overlay(player, overlay, barber)
     end
 
-    for _, item in ipairs(CLOTHING) do
+    for _, item in ipairs(_data.constants.clothing) do
         m.apply_clothing(player, item, data.clothing)
     end
 
@@ -332,7 +274,7 @@ function m.get_appearance_ranges()
         fade_colour = { min = -1, max = 63 }
     }
 
-    for _, overlay in ipairs(OVERLAYS) do
+    for _, overlay in ipairs(_data.constants.overlays) do
         ranges[overlay.style] = { min = -1, max = GetPedHeadOverlayNum(overlay.index) - 1 }
         if overlay.opacity then
             ranges[overlay.opacity] = { min = -1, max = 100 }
@@ -342,7 +284,7 @@ function m.get_appearance_ranges()
         end
     end
 
-    for _, item in ipairs(CLOTHING) do
+    for _, item in ipairs(_data.constants.clothing) do
         local max_drawable, max_texture = -1, -1
         local current_style = tonumber(clothing_data[item.style]) or 0
 
@@ -368,28 +310,23 @@ function m.get_appearance_ranges()
     return ranges
 end
 
-function m.setup_avatar_creator(location, ped, style)
-    local coords = nil
-
-    if type(location) == "vector4" then
-        coords = location
-    elseif type(location) == "table" and location.x and location.y and location.z then
-        coords = location
-    elseif type(location) == "string" and _cfg.locations and _cfg.locations[location] then
-        coords = _cfg.locations[location].coords
-    elseif _cfg.locations and _cfg.locations["default"] then
-        coords = _cfg.locations["default"].coords
-    end
-
-    if not coords then
-        log("error", "Function: setup_avatar_creator failed | Reason: Could not resolve valid target coordinates.")
+function m.setup_avatar_creator(opts)
+    if type(opts) ~= "table" then
+        log("error", "Function: setup_avatar_creator failed | Reason: Missing options table.")
         return
     end
 
-    local target_ped = ped or m.current_ped
+    local coords = opts.coords or opts.location
+    local is_valid_coords = type(coords) == "vector4" or (type(coords) == "table" and coords.x and coords.y and coords.z)
+    if not is_valid_coords then
+        log("error", "Function: setup_avatar_creator failed | Reason: Valid coords required in opts.")
+        return
+    end
 
-    if style then
-        m.avatar_styles[target_ped] = copy_table(style)
+    local target_ped = opts.ped or m.current_ped
+
+    if opts.style then
+        m.avatar_styles[target_ped] = copy_table(opts.style)
     else
         m.reset_avatar_style(target_ped)
     end
@@ -397,27 +334,55 @@ function m.setup_avatar_creator(location, ped, style)
     local player_id = PlayerId()
     local player_ped = PlayerPedId()
     local success, message = m.set_avatar_model(player_id, player_ped, target_ped)
-    if not success then log("error", message) return end
+    if not success then
+        log("error", message)
+        return
+    end
 
-    Wait(1500)
+    local model_hash = GetEntityModel(PlayerPedId())
+    local timeout = GetGameTimer() + 5000
+    while not HasModelLoaded(model_hash) and GetGameTimer() < timeout do
+        Wait(0)
+    end
 
     player_ped = PlayerPedId()
-    SetEntityCoords(player_ped, coords.x, coords.y, coords.z, false, false, false, true)
-    SetEntityHeading(player_ped, coords.w or 0.0)
 
-    Wait(500)
+    timeout = GetGameTimer() + 5000
+    while not DoesEntityExist(player_ped) and GetGameTimer() < timeout do
+        Wait(0)
+        player_ped = PlayerPedId()
+    end
 
-    local cam_cfg = _cfg.camera_positions and _cfg.camera_positions.body
-    if cam_cfg then
+    FreezeEntityPosition(player_ped, false)
+    local found, ground_z = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z + 1.0, false)
+    local target_z = found and ground_z or coords.z
+
+    SetEntityCoords(player_ped, coords.x, coords.y, target_z, false, false, false, true)
+    SetEntityHeading(player_ped, coords.w or coords.h or 0.0)
+
+    timeout = GetGameTimer() + 2000
+    while GetGameTimer() < timeout do
+        local pos = GetEntityCoords(player_ped)
+        if #(pos - vector3(coords.x, coords.y, target_z)) < 1.0 then
+            break
+        end
+        Wait(0)
+    end
+
+    FreezeEntityPosition(player_ped, true)
+
+    if opts.camera_offset then
         _cam.set_entity_cam({
             entity = player_ped,
-            coords = cam_cfg.offset,
-            height_adjustment = cam_cfg.height_adjustment
+            coords = opts.camera_offset,
+            height_adjustment = opts.height_adjustment or 0.0
         })
     end
 
     SetNuiFocus(true, true)
     DisplayRadar(false)
+
+    Wait(100)
 
     if IsScreenFadedOut() then DoScreenFadeIn(500) end
 end
@@ -448,3 +413,4 @@ exports("get_current_avatar_ped", function()
 end)
 
 return m
+

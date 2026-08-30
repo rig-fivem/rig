@@ -21,7 +21,7 @@ function m.request_avatar(source)
         return nil 
     end
 
-    local player = rig.players:get(source)
+    local player = core.players:get(source)
     if not player or not player.avatar then 
         log("error", ("Player or player avatar missing for source %s"):format(tostring(source)))
         return nil 
@@ -36,7 +36,7 @@ function m.customise_avatar(source, data)
         return false 
     end
 
-    local player = rig.players:get(source)
+    local player = core.players:get(source)
     if not player or not player.avatar then 
         log("error", ("Player or player avatar missing for source %s"):format(tostring(source)))
         return false 
@@ -79,7 +79,7 @@ AddEventHandler("rig:server:customise_avatar", function(data)
     log("info", ("[Avatar] Player %s successfully saved avatar customization. Routing to spawn selector..."):format(_src))
 
     local updated_avatar = m.request_avatar(_src)
-    TriggerClientEvent("rig:client:open_spawn_selector", _src, updated_avatar)
+    TriggerEvent("rig:server:customise_avatar_response", _src, updated_avatar)
 end)
 
 --- @section Exports

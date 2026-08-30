@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig_avatars-cfx/blob/main/LICENSE
 ]]
 
 --- @module effects
---- @file configuration/configs/effects.lua
+--- @file configs/effects.lua
 --- @description Handles all spawns related config settings
 
 return {

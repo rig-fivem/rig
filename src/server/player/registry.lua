@@ -69,7 +69,7 @@ end
 --- @section Players
 
 function PlayerRegistry:create(source)
-    local user = rig.users:get(source)
+    local user = core.users:get(source)
     if not user then
         log("warn", ("Failed to create player instance for source %d: user record not found in registry"):format(source))
         return nil

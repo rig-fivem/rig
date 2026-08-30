@@ -10,12 +10,12 @@ AddEventHandler("rig:client:player_loaded", function(player)
         return
     end
 
-    if not rig.client_player then
-        log("error", "Cannot set loaded state: rig.client_player is nil")
+    if not core.client_player then
+        log("error", "Cannot set loaded state: core.client_player is nil")
         return
     end
 
-    rig.client_player:set_loaded(true)
+    core.client_player:set_loaded(true)
     log("info", ("Player loaded: %s (source %d)"):format(tostring(player.username), player.source))
 end)
 
@@ -26,13 +26,13 @@ AddEventHandler("rig:client:player_playing_state_changed", function(state)
         return
     end
 
-    if not rig.client_player then
-        log("error", "Cannot set playing state: rig.client_player is nil")
+    if not core.client_player then
+        log("error", "Cannot set playing state: core.client_player is nil")
         return
     end
 
-    rig.client_player:set_playing(state)
-    log("info", ("Player playing state changed: %s"):format(rig.client_player:is_playing() and "playing" or "not playing"))
+    core.client_player:set_playing(state)
+    log("info", ("Player playing state changed: %s"):format(core.client_player:is_playing() and "playing" or "not playing"))
 end)
 
 --- @section Data Sync
@@ -44,10 +44,10 @@ AddEventHandler("rig:client:sync_player_data", function(payload)
         return
     end
 
-    if not rig.client_player then
-        log("error", "Cannot sync player data: rig.client_player is nil")
+    if not core.client_player then
+        log("error", "Cannot sync player data: core.client_player is nil")
         return
     end
 
-    rig.client_player:sync(payload)
+    core.client_player:sync(payload)
 end)

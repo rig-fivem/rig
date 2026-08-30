@@ -4,23 +4,23 @@
 
 --- @section Namespace
 
-rig = {}
+core = {}
 
-rig.resource_name = GetCurrentResourceName()
-rig.server = IsDuplicityVersion()
-rig.client = not IsDuplicityVersion()
-rig.releases_url = "https://api.github.com/repos/rig-fivem/rig-fivem/releases/latest"
-rig.cache = {}
-rig.locales = {}
+core.resource_name = GetCurrentResourceName()
+core.server = IsDuplicityVersion()
+core.client = not IsDuplicityVersion()
+core.releases_url = "https://api.github.com/repos/rig-fivem/rig-fivem/releases/latest"
+core.cache = {}
+core.locales = {}
 
-rig.metadata = {
-    name = GetResourceMetadata(rig.resource_name, "name", 0) or rig.resource_name,
-    description = GetResourceMetadata(rig.resource_name, "description", 0) or "N/A",
-    version = GetResourceMetadata(rig.resource_name, "version", 0) or "1.0.0",
-    author = GetResourceMetadata(rig.resource_name, "author", 0) or "Unknown"
+core.metadata = {
+    name = GetResourceMetadata(core.resource_name, "name", 0) or core.resource_name,
+    description = GetResourceMetadata(core.resource_name, "description", 0) or "N/A",
+    version = GetResourceMetadata(core.resource_name, "version", 0) or "1.0.0",
+    author = GetResourceMetadata(core.resource_name, "author", 0) or "Unknown"
 }
 
-rig.settings = {
+core.settings = {
     general = {
         debug = GetConvarBool("rig:general:debug", false),
         language = GetConvar("rig:general:language", "en"),
@@ -56,7 +56,7 @@ rig.settings = {
 --- @section Global Functions
 
 local function get_local_time()
-    if rig.server then return os.date("%Y-%m-%d %H:%M:%S") end
+    if core.server then return os.date("%Y-%m-%d %H:%M:%S") end
     if GetLocalTime then
         local y, m, d, h, min, s = GetLocalTime()
         return string.format("%04d-%02d-%02d %02d:%02d:%02d", y, m, d, h, min, s)
@@ -67,19 +67,19 @@ end
 _G.get_local_time = get_local_time
 
 local function log(level, message)
-    if not rig.settings.general.debug then return end
+    if not core.settings.general.debug then return end
     local colours = { reset = "^7", debug = "^6", info = "^5", success = "^2", warn = "^3", error = "^8", critical = "^1", dev = "^9" }
     local clr = colours[level] or "^7"
     local time = get_local_time()
-    print(("%s[%s] [%s] [%s]:^7 %s"):format(clr, time, rig.metadata.name, level:upper(), message))
+    print(("%s[%s] [%s] [%s]:^7 %s"):format(clr, time, core.metadata.name, level:upper(), message))
 end
 
 _G.log = log
 
 local function locale(key, ...)
-    local str = rig.locales[key]
+    local str = core.locales[key]
     if not str and type(key) == "string" then
-        local v = rig.locales
+        local v = core.locales
         for p in key:gmatch("[^%.]+") do v = v and v[p] end
         str = v
     end
@@ -98,20 +98,20 @@ local function safe_require(key)
     if not key or type(key) ~= "string" then return nil end
 
     local path = key:gsub("%.lua$", ""):gsub("%.", "/") .. ".lua"
-    local cache_key = ("%s:%s"):format(rig.resource_name, path)
-    if rig.cache[cache_key] then 
+    local cache_key = ("%s:%s"):format(core.resource_name, path)
+    if core.cache[cache_key] then 
         log("debug", ("Loaded module from cache: %s"):format(path))
-        return rig.cache[cache_key] 
+        return core.cache[cache_key] 
     end
 
-    local file_content = LoadResourceFile(rig.resource_name, path)
+    local file_content = LoadResourceFile(core.resource_name, path)
     if not file_content then 
         log("warn", ("Module not found: %s"):format(path), true)
         return nil 
     end
 
     local env = setmetatable({}, { __index = _G })
-    local chunk, err = load(file_content, ("@@%s/%s"):format(rig.resource_name, path), "t", env)
+    local chunk, err = load(file_content, ("@@%s/%s"):format(core.resource_name, path), "t", env)
 
     if not chunk then 
         log("error", ("Module compile error in %s: %s"):format(path, err), true)
@@ -129,7 +129,7 @@ local function safe_require(key)
         return nil 
     end
 
-    rig.cache[cache_key] = res
+    core.cache[cache_key] = res
     log("success", ("Successfully loaded module: %s"):format(path))
     return res
 end
@@ -141,13 +141,13 @@ local function safe_require_json(key)
     if not key or type(key) ~= "string" then return nil end
 
     local path = key:gsub("%.json$", ""):gsub("%.", "/") .. ".json"
-    local cache_key = ("%s:%s"):format(rig.resource_name, path)
-    if rig.cache[cache_key] then 
+    local cache_key = ("%s:%s"):format(core.resource_name, path)
+    if core.cache[cache_key] then 
         log("debug", ("Loaded JSON from cache: %s"):format(path))
-        return rig.cache[cache_key] 
+        return core.cache[cache_key] 
     end
 
-    local file_content = LoadResourceFile(rig.resource_name, path)
+    local file_content = LoadResourceFile(core.resource_name, path)
     if not file_content then 
         log("warn", ("JSON file not found: %s"):format(path), true)
         return nil 
@@ -159,7 +159,7 @@ local function safe_require_json(key)
         return nil 
     end
 
-    rig.cache[cache_key] = res
+    core.cache[cache_key] = res
     log("success", ("Successfully loaded JSON: %s"):format(path))
     return res
 end
@@ -169,14 +169,14 @@ exports("require_json", safe_require_json)
 
 --- @section Setup Locales
 
-local loaded_locales = require_json("configuration.locales." .. rig.settings.general.language)
+local loaded_locales = require_json("locales." .. core.settings.general.language)
 if loaded_locales then
-    rig.locales = loaded_locales
+    core.locales = loaded_locales
 end
 
 --- @section Console Splash & Version Check
 
-if rig.server then
+if core.server then
 
     local function log_setting(key, value)
         local function format_value(v)
@@ -197,9 +197,9 @@ if rig.server then
         local is_mismatch = remote and remote.version and (tostring(remote.version) ~= tostring(current_ver))
         local ver_tag = not remote and ("^8[Unable to verify]^7") or is_mismatch and ("^3[v" .. remote.version .. " Available]^7") or ("^2[Up to date]^7")
 
-        if rig.settings.general.small_console_splash then
+        if core.settings.general.small_console_splash then
             print(separator)
-            print(("^7[%s] ^2v%s^7 %s"):format(rig.metadata.name, current_ver, ver_tag))
+            print(("^7[%s] ^2v%s^7 %s"):format(core.metadata.name, current_ver, ver_tag))
             if is_mismatch then
                 print("^3Update available -- disable small_console_splash for full changelog details^7")
             end
@@ -212,11 +212,11 @@ if rig.server then
         print("^2██▄▄██▄ ██ ██  ▄▄▄   ██     ██^7")
         print("^2██   ██ ██  ▀███▀  ▄ ██████ ██^7")
         print(separator)
-        print("^7Name: ^2" .. rig.metadata.name .. "^7")
-        print("^7Description: ^2" .. rig.metadata.description .. "^7")
-        print("^7Author: ^2" .. rig.metadata.author .. "^7")
+        print("^7Name: ^2" .. core.metadata.name .. "^7")
+        print("^7Description: ^2" .. core.metadata.description .. "^7")
+        print("^7Author: ^2" .. core.metadata.author .. "^7")
         print(("^7Version: %s %s"):format(is_mismatch and "^1v" .. current_ver or "^2v" .. current_ver, ver_tag))
-        print("^7Language: ^2" .. (rig.settings.general.language or "en") .. "^7")
+        print("^7Language: ^2" .. (core.settings.general.language or "en") .. "^7")
 
         if is_mismatch then
             print(separator)
@@ -234,14 +234,14 @@ if rig.server then
 
         print(separator)
         print("^7Settings:^7")
-        for key, value in pairs(rig.settings) do
+        for key, value in pairs(core.settings) do
             log_setting(key, value)
         end
         print(separator)
     end
 
     local function check_release(current_ver)
-        PerformHttpRequest(rig.releases_url, function(status, body)
+        PerformHttpRequest(core.releases_url, function(status, body)
             if status ~= 200 then
                 return render_startup(nil, current_ver)
             end
@@ -267,6 +267,6 @@ if rig.server then
         end, "GET", "", { ["User-Agent"] = "RIG-VersionChecker" })
     end
 
-    check_release(rig.metadata.version)
+    check_release(core.metadata.version)
 
 end

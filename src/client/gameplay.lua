@@ -13,7 +13,7 @@ end
 
 --- @section Constants
 
-local GAMEPLAY = rig.settings.gameplay
+local GAMEPLAY = core.settings.gameplay
 local HUD_COMPONENTS = split_ids(GAMEPLAY.hud_components)
 local DISABLED_CONTROLS = split_ids(GAMEPLAY.disabled_controls)
 local player_id = PlayerId()

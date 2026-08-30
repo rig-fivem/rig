@@ -8,7 +8,7 @@ local callbacks = require("src.server.modules.callbacks")
 --- @section Callbacks
 
 callbacks.register_callback("rig:server:test_callback", function(source, data, cb)
-    local player = rig.players:get(source)
+    local player = core.players:get(source)
     if not player then
         return cb({
             success = false,

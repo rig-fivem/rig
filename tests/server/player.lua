@@ -11,18 +11,18 @@ commands.register_command({
     name = "testplayer",
     help = "Test creation, data management, and method attachment on a Player object",
     handler = function(source)
-        local user = rig.users:get(source)
+        local user = core.users:get(source)
         if not user then
             log("error", ("[testplayer] User session missing for source %d. Run /testjoin first!"):format(source))
             return
         end
 
-        if rig.players:get(source) then
+        if core.players:get(source) then
             log("warn", ("[testplayer] Player object already exists for source %d"):format(source))
             return
         end
 
-        local player = rig.players:create(source)
+        local player = core.players:create(source)
         if not player then
             log("error", ("[testplayer] Player creation failed for source %d"):format(source))
             return
@@ -63,13 +63,13 @@ commands.register_command({
     name = "removeplayer",
     help = "Test cleanup and unloading of a Player object",
     handler = function(source)
-        local player = rig.players:get(source)
+        local player = core.players:get(source)
         if not player then
             log("warn", ("[removeplayer] No active player object found for source %d"):format(source))
             return
         end
 
-        rig.players:remove(source)
+        core.players:remove(source)
         log("success", ("[removeplayer] Successfully removed player instance for source %d"):format(source))
     end
 })

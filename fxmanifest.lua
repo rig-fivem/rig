@@ -19,13 +19,15 @@ lua54 "yes"
 
 ui_page "ui/index.html"
 files {
-    "configuration/locales/*.json",
-    "configuration/data/*.json",
+    "locales/*.json",
+    "src/shared/data/*.json",
+    "src/shared/data/*.lua",
     "ui/**/*",
 }
 
 shared_scripts {
-    "src/init.lua"
+    "configs/*.lua",
+    "init.lua"
 }
 
 server_scripts {

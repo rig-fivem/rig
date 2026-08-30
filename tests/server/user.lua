@@ -13,14 +13,14 @@ _cmds.register_command({
     name = "testjoin",
     help = "Manually re-activates your user + player session after a core restart",
     handler = function(source)
-        if not rig.users:get(source) then
+        if not core.users:get(source) then
             local ids = _utils.get_identifiers(source)
             if not ids.license then
                 print(("[testjoin] No license identifier for source %d"):format(source))
                 return
             end
 
-            local result = rig.users:exists(ids.license)
+            local result = core.users:exists(ids.license)
             local user_data = result and result[1]
             if not user_data then
                 print(("[testjoin] No DB record found for license %s"):format(ids.license))
@@ -33,7 +33,7 @@ _cmds.register_command({
                 return
             end
 
-            rig.users.active[source] = u
+            core.users.active[source] = u
             print(("[testjoin] Activated User UID %s"):format(tostring(u.unique_id)))
         else
             print(("[testjoin] User session already active for source %d"):format(source))
@@ -45,7 +45,7 @@ _cmds.register_command({
     name = "testuser",
     help = "Prints your active User object's core fields",
     handler = function(source)
-        local user = rig.users:get(source)
+        local user = core.users:get(source)
         if not user then
             print(("[testuser] No active user for source %d"):format(source))
             return
@@ -67,7 +67,7 @@ _cmds.register_command({
     name = "testidentifiers",
     help = "Prints identifiers for the current user",
     handler = function(source)
-        local user = rig.users:get(source)
+        local user = core.users:get(source)
         if not user then
             print(("[testidentifiers] No active user for source %d"):format(source))
             return
@@ -85,7 +85,7 @@ _cmds.register_command({
     help = "Sets your VIP level",
     params = { { name = "level", help = "VIP level (number)" } },
     handler = function(source, args)
-        local user = rig.users:get(source)
+        local user = core.users:get(source)
         if not user then
             print(("[testvip] No active user for source %d"):format(source))
             return
@@ -107,7 +107,7 @@ _cmds.register_command({
     help = "Sets your username",
     params = { { name = "username", help = "New username" } },
     handler = function(source, args)
-        local user = rig.users:get(source)
+        local user = core.users:get(source)
         if not user then
             print(("[testusername] No active user for source %d"):format(source))
             return
@@ -128,7 +128,7 @@ _cmds.register_command({
     name = "testban",
     help = "Bans yourself for testing (careful!)",
     handler = function(source)
-        local user = rig.users:get(source)
+        local user = core.users:get(source)
         if not user then
             print(("[testban] No active user for source %d"):format(source))
             return

@@ -10,8 +10,8 @@ local _utils = require("src.server.modules.utils")
 
 --- @section Registries
 
-rig.users = UserRegistry.new()
-rig.players = PlayerRegistry.new()
+core.users = UserRegistry.new()
+core.players = PlayerRegistry.new()
 
 --- @section Events
 
@@ -25,7 +25,7 @@ end)
 
 AddEventHandler("playerConnecting", function(name, kick, deferrals)
     local _src = source
-    rig.users:request_connection(_src, name, deferrals)
+    core.users:request_connection(_src, name, deferrals)
 end)
 
 AddEventHandler("playerJoining", function()
@@ -33,9 +33,9 @@ AddEventHandler("playerJoining", function()
     local ids = _utils.get_identifiers(_src)
 
     if ids.license then
-        if rig.users:activate(_src, ids.license) then
-            rig.players:create(_src)
-            rig.players:assign_personal_bucket(_src)
+        if core.users:activate(_src, ids.license) then
+            core.players:create(_src)
+            core.players:assign_personal_bucket(_src)
             _cmds.push_command_suggestion(_src)
         end
     end
@@ -43,13 +43,13 @@ end)
 
 AddEventHandler("playerDropped", function(reason)
     local _src = source
-    local player = rig.players:get(_src)
+    local player = core.players:get(_src)
     if player then
         player:save()
     end
 
-    rig.players:remove(_src)
-    rig.users:remove(_src)
+    core.players:remove(_src)
+    core.users:remove(_src)
 end)
 
 AddEventHandler("onResourceStart", function(res)
@@ -66,7 +66,7 @@ AddEventHandler("onResourceStart", function(res)
         local ok, Class = pcall(require, full_path)
 
         if ok and type(Class) == "table" then
-            rig.players:register_extension(ext.name, function(player)
+            core.players:register_extension(ext.name, function(player)
                 if type(Class.new) == "function" then
                     return Class.new(player)
                 end
@@ -82,5 +82,5 @@ end)
 
 AddEventHandler("onResourceStop", function(res)
     if res ~= GetCurrentResourceName() then return end
-    rig.players:save_all()
+    core.players:save_all()
 end)

@@ -16,7 +16,7 @@ UserRegistry.__index = UserRegistry
 --- @section Helpers
 
 local function update_deferral(deferrals, key, ...)
-    if not rig.settings.general.connection_messages then return end
+    if not core.settings.general.connection_messages then return end
     local msg = locale(key, ...)
     deferrals.update(msg)
 end
@@ -65,8 +65,8 @@ function UserRegistry:request_connection(source, name, deferrals)
 
     if not user_data then
         update_deferral(deferrals, "src.server.user.registry.creating")
-        local uid = _db.generate_unique_id(rig.settings.users.unique_id_chars, "users", "unique_id", nil)
-        local username = rig.settings.users.username_prefix .. "_" .. uid
+        local uid = _db.generate_unique_id(core.settings.users.unique_id_chars, "users", "unique_id", nil)
+        local username = core.settings.users.username_prefix .. "_" .. uid
         self:persist(username, name, uid, ids.license, ids.discord, GetPlayerTokens(source), ids.ip)
         user_data = { username = username, name = name, unique_id = uid, license = ids.license, discord = ids.discord, ip = ids.ip, banned = false, vip = 1 }
         log("success", ("Created new user profile UID %s for %s"):format(uid, name))

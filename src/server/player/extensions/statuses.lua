@@ -4,8 +4,8 @@
 
 --- @section Imports
 
-local _cfg_statuses = require("configuration.configs.statuses")
-local _cfg_effects = require("configuration.configs.effects")
+local _cfg_statuses = require("configs.statuses")
+local _cfg_effects = require("configs.effects")
 
 --- @section Constants
 
@@ -461,7 +461,7 @@ function Statuses:revive_player()
 end
 
 function Statuses:begin_respawn()
-    rig.players:assign_personal_bucket(self.player.source)
+    core.players:assign_personal_bucket(self.player.source)
     self.player:set_playing(false)
 
     TriggerClientEvent("rig:client:respawn_player", self.player.source)

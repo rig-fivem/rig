@@ -4,7 +4,7 @@
 
 --- @section Imports
 
-local _cfg_spawns = require("configuration.configs.spawns")
+local _cfg_spawns = require("configs.spawns")
 
 --- @section Initialisation
 
@@ -148,7 +148,7 @@ function Spawn:spawn_player(coords)
     SetEntityCoords(ped, coords.x, coords.y, coords.z, false, false, false, false)
     SetEntityHeading(ped, coords.w or 0.0)
 
-    rig.players:set_bucket(player.source, 0) -- @todo swap to main bucket when readd bucket routing
+    core.players:set_bucket(player.source, 0) -- @todo swap to main bucket when readd bucket routing
     player:set_playing(true)
 
     TriggerClientEvent("rig:client:find_ground_and_spawn", player.source)

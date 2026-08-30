@@ -14,31 +14,61 @@ License: https://github.com/rig-fivem/rig_avatars-cfx/blob/main/LICENSE
 
 return {
 
-    locations = {
-        default = {
-            coords = vector4(153.14, -734.61, 250.15, 343.49),
-            is_default = true,
+    constants = {
+        facial_features = {
+            { index = 0, value = "nose_width" }, 
+            { index = 1, value = "nose_peak_height" }, 
+            { index = 2, value = "nose_peak_length" },
+            { index = 3, value = "nose_bone_height" }, 
+            { index = 4, value = "nose_peak_lower" }, 
+            { index = 5, value = "nose_twist" },
+            { index = 6, value = "eyebrow_height" }, 
+            { index = 7, value = "eyebrow_depth" }, 
+            { index = 8, value = "cheek_bone" },
+            { index = 9, value = "cheek_sideways_bone" }, 
+            { index = 10, value = "cheek_bone_width" },
+            { index = 11, value = "eye_opening" }, 
+            { index = 12, value = "lip_thickness" }, 
+            { index = 13, value = "jaw_bone_width" },
+            { index = 14, value = "jaw_bone_shape" }, 
+            { index = 15, value = "chin_bone" }, 
+            { index = 16, value = "chin_bone_length" },
+            { index = 17, value = "chin_bone_shape" }, 
+            { index = 18, value = "chin_hole" }, 
+            { index = 19, value = "neck_thickness" }
         },
-    },
 
-    camera_positions = {
-        face = { 
-            offset = vector3(0.0, 0.55, 0.60),
-            height_adjustment = 0,
-            near_dof = 0.4,
-            far_dof = 1.3
+        overlays = {
+            { index = 2, style = "eyebrow", opacity = "eyebrow_opacity", colour = "eyebrow_colour" },
+            { index = 1, style = "facial_hair", opacity = "facial_hair_opacity", colour = "facial_hair_colour" },
+            { index = 10, style = "chest_hair", opacity = "chest_hair_opacity", colour = "chest_hair_colour" },
+            { index = 4, style = "make_up", opacity = "make_up_opacity", colour = "make_up_colour" },
+            { index = 5, style = "blush", opacity = "blush_opacity", colour = "blush_colour" },
+            { index = 8, style = "lipstick", opacity = "lipstick_opacity", colour = "lipstick_colour" },
+            { index = 0, style = "blemish", opacity = "blemish_opacity" },
+            { index = 11, style = "moles", opacity = "moles_opacity" },
+            { index = 3, style = "ageing", opacity = "ageing_opacity" },
+            { index = 6, style = "complexion", opacity = "complexion_opacity" },
+            { index = 7, style = "sun_damage", opacity = "sun_damage_opacity" },
+            { index = 9, style = "body_blemish", opacity = "body_blemish_opacity" }
         },
-        body = { 
-            offset = vector3(0.0, 1.65, 0.15),
-            height_adjustment = 0.35,
-            near_dof = 0.7,
-            far_dof = 1.9
-        },
-        legs = { 
-            offset = vector3(0.0, 0.85, -0.50),
-            height_adjustment = 0,
-            ear_dof = 0.7,
-            far_dof = 1.5
+
+        clothing = {
+            { index = 1, style = "mask_style", texture = "mask_texture" },
+            { index = 11, style = "jacket_style", texture = "jacket_texture" },
+            { index = 8, style = "shirt_style", texture = "shirt_texture" },
+            { index = 9, style = "vest_style", texture = "vest_texture" },
+            { index = 4, style = "legs_style", texture = "legs_texture" },
+            { index = 6, style = "shoes_style", texture = "shoes_texture" },
+            { index = 3, style = "hands_style", texture = "hands_texture" },
+            { index = 5, style = "bag_style", texture = "bag_texture" },
+            { index = 10, style = "decals_style", texture = "decals_texture" },
+            { index = 7, style = "neck_style", texture = "neck_texture" },
+            { index = 0, style = "hats_style", texture = "hats_texture", is_prop = true },
+            { index = 1, style = "glasses_style", texture = "glasses_texture", is_prop = true },
+            { index = 2, style = "earwear_style", texture = "earwear_texture", is_prop = true },
+            { index = 6, style = "watches_style", texture = "watches_texture", is_prop = true },
+            { index = 7, style = "bracelets_style", texture = "bracelets_texture", is_prop = true }
         }
     },
 
@@ -93,6 +123,7 @@ return {
                 ZONE_LEFT_LEG = {}, ZONE_RIGHT_LEG = {}
             }
         },
+        
         mp_f_freemode_01 = {
             genetics = {
                 mother = 0, father = 0, resemblance = 0, skin = 0,
@@ -143,6 +174,5 @@ return {
                 ZONE_LEFT_LEG = {}, ZONE_RIGHT_LEG = {}
             }
         }
-    },
-
+    }
 }

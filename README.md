@@ -8,7 +8,7 @@
 ![Platforms](https://img.shields.io/badge/Platforms-FiveM-green?style=flat-square&labelColor=0E0E0E)
 ![License](https://img.shields.io/badge/License-Apache--2.0-555?style=flat-square&labelColor=0E0E0E)
 
-<a href="https://rig.li" style="text-decoration: none;"><img src="https://img.shields.io/badge/📖_Docs-rig.li-F97316?style=for-the-badge&logoColor=white" alt="Documentation" /></a><a href="https://discord.gg/butzvU8GCN" style="text-decoration: none;"><img src="https://img.shields.io/badge/_Discord-/butzvU8GCN-F97316?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
+<a href="https://core.li" style="text-decoration: none;"><img src="https://img.shields.io/badge/📖_Docs-core.li-F97316?style=for-the-badge&logoColor=white" alt="Documentation" /></a><a href="https://discord.gg/butzvU8GCN" style="text-decoration: none;"><img src="https://img.shields.io/badge/_Discord-/butzvU8GCN-F97316?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
 
 <h4>Built by Case (CaseIRL)</h3>
 
