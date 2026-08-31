@@ -41,13 +41,29 @@ export class Notify {
         return map[this.position] || map["top-right"];
     }
 
+    resolve_icon_html(icon) {
+        if (!icon) return "";
+
+        const trimmed = icon.trim();
+
+        if (trimmed.startsWith("<svg")) {
+            return `<span class="notify_icon notify_icon_svg">${trimmed}</span>`;
+        }
+
+        if (/\.(svg|png|jpg|jpeg|webp)$/i.test(trimmed)) {
+            return `<img class="notify_icon notify_icon_img" src="${trimmed}" alt="" />`;
+        }
+        
+        return `<i class="${trimmed} notify_icon notify_icon_fa"></i>`;
+    }
+
     show({ type = "info", header = null, message = "", duration = 4000, icon = null }) {
         if (!message) return;
-        const icon_html = icon ? `<i class="${icon} notify_icon"></i>` : "";
+        const icon_html = this.resolve_icon_html(icon);
         const has_duration = duration > 0;
         const notify = `
             <div class="notify notify_${type} ${has_duration ? 'notify_has_bar' : ''}">
-                ${header ? `<div class="notify_header">${header}</div>` : `<div class="notify_body" style="padding-top: 1vh;">${message}</div>`}
+                ${header ? `<div class="notify_header">${icon_html}${header}</div>` : `<div class="notify_body" style="padding-top: 1vh;">${icon_html}${message}</div>`}
                 ${header ? `<div class="notify_body">${message}</div>` : ""}
                 ${has_duration ? `<div class="notify_bar"><div class="notify_fill"></div></div>` : ""}
             </div>
@@ -60,41 +76,3 @@ export class Notify {
         }
     }
 }
-
-/*
-const notify = new Notify({
-    position: "right-center",
-    fill_direction: "up"
-});
-
-notify.show({
-    type: "success",
-    header: "Success",
-    message: "Operation completed successfully.",
-    icon: "fa-solid fa-check-circle",
-    duration: 50000
-});
-
-notify.show({
-    type: "error",
-    header: "Error",
-    message: "Something went wrong.",
-    icon: "fa-solid fa-times-circle",
-    duration: 80000
-});
-
-notify.show({
-    type: "warning",
-    header: "Warning",
-    message: "Some basic regular notification.",
-    icon: "fa-solid fa-exclamation-circle",
-    duration: 0
-});
-
-notify.show({
-    type: "info",
-    message: "Some basic regular notification.",
-    icon: `"fa-solid fa-exclamation-circle"`,
-    duration: 0
-});
-*/

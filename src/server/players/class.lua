@@ -68,7 +68,6 @@ function Player:load()
     end
 
     priv.flags.loaded = true
-    self:emit("loaded")
     log("success", ("Player instance for source %d loaded successfully"):format(self.source))
     return true
 end

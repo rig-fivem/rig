@@ -27,13 +27,13 @@ end
 
 function m.call_registered_function(label, data)
     if not label then
-        print("error", "gui: label is required")
+        log("error", "gui: label is required")
         return false
     end
 
     local func = functions[label]
     if not func then
-        print("error", ("gui: no function registered for label '%s'"):format(label))
+        log("error", ("gui: no function registered for label '%s'"):format(label))
         return false
     end
 
@@ -66,7 +66,7 @@ end
 
 function m.notify(source, opts)
     if not source or not opts then
-        print("error", "gui: notify called with missing source or opts")
+        log("error", "gui: notify called with missing source or opts")
         return
     end
 
@@ -77,7 +77,7 @@ end
 
 function m.build_modal(source, opts)
     if not source or not opts then
-        print("error", "gui: build_modal called with missing source or opts")
+        log("error", "gui: build_modal called with missing source or opts")
         return
     end
 
@@ -86,7 +86,7 @@ end
 
 function m.close_modal(source, container)
     if not source then
-        print("error", "gui: close_modal called with missing source")
+        log("error", "gui: close_modal called with missing source")
         return
     end
 
@@ -97,7 +97,7 @@ end
 
 function m.set_kvp_display(source, title, controls, show)
     if not source then
-        print("error", "gui: set_kvp_display called with missing source")
+        log("error", "gui: set_kvp_display called with missing source")
         return
     end
 
@@ -106,7 +106,7 @@ end
 
 function m.show_kvp_display(source)
     if not source then
-        print("error", "gui: show_kvp_display called with missing source")
+        log("error", "gui: show_kvp_display called with missing source")
         return
     end
 
@@ -115,7 +115,7 @@ end
 
 function m.hide_kvp_display(source)
     if not source then
-        print("error", "gui: hide_kvp_display called with missing source")
+        log("error", "gui: hide_kvp_display called with missing source")
         return
     end
 
@@ -124,7 +124,7 @@ end
 
 function m.toggle_kvp_display(source)
     if not source then
-        print("error", "gui: toggle_kvp_display called with missing source")
+        log("error", "gui: toggle_kvp_display called with missing source")
         return
     end
 
@@ -133,7 +133,7 @@ end
 
 function m.destroy_kvp_display(source)
     if not source then
-        print("error", "gui: destroy_kvp_display called with missing source")
+        log("error", "gui: destroy_kvp_display called with missing source")
         return
     end
 
@@ -144,7 +144,7 @@ end
 
 function m.progress_bar(source, opts)
     if not source or not opts then
-        print("error", "gui: progress_bar called with missing source or opts")
+        log("error", "gui: progress_bar called with missing source or opts")
         return
     end
 
@@ -153,7 +153,7 @@ end
 
 function m.cancel_progress_bar(source)
     if not source then
-        print("error", "gui: cancel_progress_bar called with missing source")
+        log("error", "gui: cancel_progress_bar called with missing source")
         return
     end
 
@@ -164,7 +164,7 @@ end
 
 function m.progress_circle(source, opts)
     if not source or not opts then
-        print("error", "gui: progress_circle called with missing source or opts")
+        log("error", "gui: progress_circle called with missing source or opts")
         return
     end
 
@@ -173,7 +173,7 @@ end
 
 function m.cancel_progress_circle(source)
     if not source then
-        print("error", "gui: cancel_progress_circle called with missing source")
+        log("error", "gui: cancel_progress_circle called with missing source")
         return
     end
 
@@ -184,7 +184,7 @@ end
 
 function m.build_ui(source, ui)
     if not source or not ui then
-        print("error", "gui: build_ui called with missing source or ui")
+        log("error", "gui: build_ui called with missing source or ui")
         return
     end
 
@@ -193,7 +193,7 @@ end
 
 function m.close_ui(source)
     if not source then
-        print("error", "gui: close_ui called with missing source")
+        log("error", "gui: close_ui called with missing source")
         return
     end
 
@@ -204,7 +204,7 @@ end
 
 function m.show_status_hud(source)
     if not source then
-        print("error", "gui: show_status_hud called with missing source")
+        log("error", "gui: show_status_hud called with missing source")
         return
     end
 
@@ -213,7 +213,7 @@ end
 
 function m.hide_status_hud(source)
     if not source then
-        print("error", "gui: hide_status_hud called with missing source")
+        log("error", "gui: hide_status_hud called with missing source")
         return
     end
 
@@ -222,7 +222,7 @@ end
 
 function m.update_status_hud(source, data)
     if not source or not data then
-        print("error", "gui: update_status_hud called with missing source or data")
+        log("error", "gui: update_status_hud called with missing source or data")
         return
     end
 
@@ -231,7 +231,7 @@ end
 
 function m.destroy_status_hud(source)
     if not source then
-        print("error", "gui: destroy_status_hud called with missing source")
+        log("error", "gui: destroy_status_hud called with missing source")
         return
     end
 
@@ -245,13 +245,13 @@ AddEventHandler("rig:server:nui_handler", function(data)
     local src = source
 
     if not data or not data.action then
-        print("error", ("gui: nui_handler called with missing action (source %s)"):format(src))
+        log("error", ("gui: nui_handler called with missing action (source %s)"):format(src))
         return
     end
 
     local success, result = pcall(m.call_registered_function, data.action, data)
     if not success then
-        print("error", ("gui: function call '%s' failed for source %s: %s"):format(data.action, src, result))
+        log("error", ("gui: function call '%s' failed for source %s: %s"):format(data.action, src, result))
     end
 
     if data.should_close then

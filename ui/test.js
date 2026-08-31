@@ -9,12 +9,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { UIBuilder } from "./framework/js/main.js";
-import { InventorySlot } from "./framework/js/components/inventory_popup.js";
 import { ProgressCircle } from "./progressbar/js/circle.js";
 import { ProgressBar } from "./progressbar/js/bar.js"
 import { KeyValuePairs } from "./kvp/js/kvp.js";
-
-const GRID_MODE = true;
+import { Notify } from "./notify/js/notify.js";
 
 const make_text = (title, subtitle) => ({ type: "text", ...(title && { title }), ...(subtitle && { subtitle }) });
 const make_actions = (...actions) => ({ type: "actions", actions });
@@ -64,586 +62,6 @@ const card_hover_case = make_on_hover(
 
 const shared_card_btn = make_btn("some_button", "Some Btn", "some_action", "primary", default_dataset, shared_modal);
 const single_card_btn = make_btn("some_button", "Some Btn", "some_action", "primary", default_dataset, single_modal);
-
-const inventory_slots_page = {
-    index: 1,
-    title: "Inventory",
-    layout: { 
-        left: 3, 
-        spacer_1: 1,
-        center: 4, 
-        spacer_2: 1,
-        right: 3 
-    },
-
-    center: {
-        type: "slots",
-        layout: { scroll_y: "none", scroll_x: "none" },
-        allow_cross_group_swap: true,
-        groups: [{
-            id: "loadout",
-            layout_type: "positioned",
-            collapsible: false,
-            slots: [
-                { id: "helmet", label: "Helmet", position: { top: "0%",  left: "20%" }, size: "64px" },
-                { id: "mask", label: "Mask", position: { top: "0%",  right: "20%" }, size: "64px" },
-                { id: "backpack", label: "Bag", position: { top: "22%", left: "5%" }, size: "64px" },
-                { id: "primary", label: "Sling 1", position: { top: "22%", right: "5%" }, size: "64px" },
-                { id: "vest", label: "Vest", position: { top: "44%", left: "5%" }, size: "64px" },
-                { id: "secondary", label: "Sling 2", position: { top: "44%", right: "5%" }, size: "64px" },
-                { id: "shirt", label: "Shirt", position: { top: "66%", left: "5%" }, size: "64px" },
-                { id: "melee", label: "Melee", position: { top: "66%", right: "5%" }, size: "64px" },
-                { id: "pants", label: "Pants", position: { top: "86%", left: "20%" }, size: "64px" },
-                { id: "shoes", label: "Shoes", position: { top: "86%", right: "20%" }, size: "64px" }
-            ]
-        }]
-    },
-
-    left: {
-        type: "slots",
-        title: { text: "Equipment", span: `<i class="fa-solid fa-weight-hanging"></i> 45/120` },
-        groups: [
-            {
-                id: "vest", title: "Tactical Vest", span: `<i class="fa-solid fa-shield"></i> 8/8`,
-                slot_count: 16, columns: 8, slot_size: "53px", collapsible: true, collapsed: false,
-                items: {
-                    "1": {
-                        id: "ammo_9mm",
-                        image: "/ui/assets/images/items/ammo_9mm.png",
-                        quantity: 50,
-                        category: "ammunition",
-                        on_hover: {
-                            title: "9mm Ammunition",
-                            description: ["Standard 9mm rounds for pistols", "- Compatible with all 9mm weapons", "- Standard pressure rounds"],
-                            values: [
-                                { key: "Weight", value: "0.1kg" },
-                                { key: "Category", value: "Ammunition" },
-                                { key: "Caliber", value: "9mm" }
-                            ],
-                            actions: [
-                                { id: "use_ammo", key: "E", label: "Load Magazine" },
-                                { id: "drop_ammo", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    },
-                    "2": {
-                        id: "pistol_mag_extended",
-                        image: "/ui/assets/images/items/pistol_mag_extended.png",
-                        quantity: 2,
-                        category: "magazine",
-                        on_hover: {
-                            title: "Extended Pistol Magazine",
-                            description: ["High-capacity magazine for pistols", "- Holds up to 30 rounds", "- Compatible with 9mm pistols"],
-                            values: [
-                                { key: "Weight", value: "0.3kg" },
-                                { key: "Capacity", value: "30 rounds" },
-                                { key: "Caliber", value: "9mm" }
-                            ],
-                            actions: [
-                                { id: "equip_mag", key: "E", label: "Equip Magazine" },
-                                { id: "drop_mag", key: "G", label: "Drop" }
-                            ],
-                            rarity: "rare"
-                        }
-                    }
-                }
-            },
-            {
-                id: "backpack", title: "Bag", span: `<i class="fa-solid fa-bag-shopping"></i> 20/20`,
-                slot_count: 32, columns: 8, slot_size: "53px", collapsible: true, collapsed: false,
-                items: {
-                    "1": {
-                        id: "cabbage",
-                        image: "/ui/assets/images/items/cabbage.png",
-                        quantity: 5,
-                        category: "food",
-                        on_hover: {
-                            title: "Cabbage",
-                            description: ["Fresh cabbage. Restores hunger.", "- Grown locally", "- Can be eaten raw or cooked"],
-                            values: [
-                                { key: "Weight", value: "0.5kg" },
-                                { key: "Hunger", value: "+15%" },
-                                { key: "Category", value: "Food" }
-                            ],
-                            actions: [
-                                { id: "eat_cabbage", key: "E", label: "Eat" },
-                                { id: "drop_cabbage", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    },
-                    "2": {
-                        id: "corn",
-                        image: "/ui/assets/images/items/corn.png",
-                        quantity: 8,
-                        category: "food",
-                        on_hover: {
-                            title: "Corn",
-                            description: ["Sweet corn. Can be eaten or cooked.", "- High calorie content", "- Used in cooking recipes"],
-                            values: [
-                                { key: "Weight", value: "0.3kg" },
-                                { key: "Hunger", value: "+10%" },
-                                { key: "Category", value: "Food" }
-                            ],
-                            actions: [
-                                { id: "eat_corn", key: "E", label: "Eat" },
-                                { id: "drop_corn", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    }
-                }
-            },
-            {
-                id: "belt", title: "Utility Belt", span: `<i class="fa-solid fa-circle"></i> 6/6`,
-                slot_count: 8, columns: 8, slot_size: "53px", collapsible: true, collapsed: false,
-                items: {
-                    "1": {
-                        id: "weapon_pistol",
-                        image: "/ui/assets/images/items/weapon_pistol.png",
-                        quantity: 1,
-                        category: "weapon",
-                        progress: { value: 72 },
-                        on_hover: {
-                            title: "9mm Pistol",
-                            description: ["Holstered sidearm.", "- Reliable semi-automatic pistol", "- Standard issue sidearm"],
-                            values: [
-                                { key: "Weight", value: "1.2kg" },
-                                { key: "Condition", value: "72%" },
-                                { key: "Caliber", value: "9mm" },
-                                { key: "Category", value: "Weapon" }
-                            ],
-                            actions: [
-                                { id: "equip_pistol", key: "E", label: "Equip" },
-                                { id: "drop_pistol", key: "G", label: "Drop" }
-                            ],
-                            rarity: "uncommon"
-                        }
-                    }
-                }
-            },
-            {
-                id: "pockets", title: "Pockets", span: `<i class="fa-solid fa-hand"></i> 4/4`,
-                slot_count: 16, columns: 8, slot_size: "53px", collapsible: true, collapsed: false, show_slot_numbers: false,
-                items: {
-                    "1": {
-                        id: "weed",
-                        image: "/ui/assets/images/items/weed.png",
-                        quantity: 3,
-                        category: "plant",
-                        on_hover: {
-                            title: "Cannabis",
-                            description: ["Medicinal plant material.", "- Illegally obtained", "- Has street value"],
-                            values: [
-                                { key: "Weight", value: "0.1kg" },
-                                { key: "Category", value: "Contraband" },
-                                { key: "Street Value", value: "$45" }
-                            ],
-                            actions: [
-                                { id: "use_weed", key: "E", label: "Use" },
-                                { id: "drop_weed", key: "G", label: "Drop" }
-                            ],
-                            rarity: "uncommon"
-                        }
-                    }
-                }
-            }
-        ]
-    },
-
-    right: {
-        type: "slots",
-        title: { text: "Vicinity", span: `<i class="fa-solid fa-location-dot"></i> Ground` },
-        layout: { columns: 8, slot_size: "53px" },
-        slot_count: 200,
-        items: {
-            "1": {
-                id: "weapon_pistol",
-                image: "/ui/assets/images/items/weapon_pistol.png",
-                quantity: 1,
-                category: "weapon",
-                progress: { value: 55 },
-                on_hover: {
-                    title: "9mm Pistol",
-                    description: ["Found on the ground.", "- Reliable semi-automatic pistol", "- Showing signs of wear"],
-                    values: [
-                        { key: "Weight", value: "1.2kg" },
-                        { key: "Condition", value: "55%" },
-                        { key: "Caliber", value: "9mm" },
-                        { key: "Category", value: "Weapon" }
-                    ],
-                    actions: [{ id: "pickup_pistol", key: "E", label: "Pick Up" }],
-                    rarity: "uncommon"
-                }
-            },
-            "2": {
-                id: "ammo_9mm",
-                image: "/ui/assets/images/items/ammo_9mm.png",
-                quantity: 48,
-                category: "ammunition",
-                on_hover: {
-                    title: "9mm Ammunition",
-                    description: ["Standard 9mm rounds.", "- Compatible with all 9mm weapons"],
-                    values: [
-                        { key: "Weight", value: "0.1kg" },
-                        { key: "Caliber", value: "9mm" },
-                        { key: "Category", value: "Ammunition" }
-                    ],
-                    actions: [{ id: "pickup_ammo", key: "E", label: "Pick Up" }],
-                    rarity: "common"
-                }
-            },
-            "3": {
-                id: "cabbage",
-                image: "/ui/assets/images/items/cabbage.png",
-                quantity: 3,
-                category: "food",
-                on_hover: {
-                    title: "Cabbage",
-                    description: ["Fresh cabbage. Restores hunger."],
-                    values: [
-                        { key: "Weight", value: "0.5kg" },
-                        { key: "Hunger", value: "+15%" },
-                        { key: "Category", value: "Food" }
-                    ],
-                    actions: [{ id: "pickup_cabbage", key: "E", label: "Pick Up" }],
-                    rarity: "common"
-                }
-            }
-        }
-    }
-};
-
-const inventory_grid_page = {
-    index: 1,
-    title: "Inventory",
-    layout: { 
-        left: 3, 
-        spacer_1: 1,
-        center: 4, 
-        spacer_2: 1,
-        right: 3 
-    },
-
-    center: {
-        type: "slots",
-        layout: { scroll_y: "none", scroll_x: "none" },
-        allow_cross_group_swap: true,
-        groups: [{
-            id: "loadout",
-            layout_type: "positioned",
-            collapsible: false,
-            slots: [
-                { id: "helmet", label: "Helmet", position: { top: "0%",  left: "20%"  }, size: "64px" },
-                { id: "mask", label: "Mask", position: { top: "0%",  right: "20%" }, size: "64px" },
-                { id: "backpack", label: "Bag", position: { top: "22%", left: "5%"   }, size: "64px" },
-                { id: "primary", label: "Sling 1",  position: { top: "22%", right: "5%"  }, size: "64px" },
-                { id: "vest", label: "Vest", position: { top: "44%", left: "5%"   }, size: "64px" },
-                { id: "secondary", label: "Sling 2", position: { top: "44%", right: "5%"  }, size: "64px" },
-                { id: "shirt", label: "Shirt", position: { top: "66%", left: "5%"   }, size: "64px" },
-                { id: "melee", label: "Melee", position: { top: "66%", right: "5%"  }, size: "64px" },
-                { id: "pants", label: "Pants", position: { top: "86%", left: "20%"  }, size: "64px" },
-                { id: "shoes", label: "Shoes", position: { top: "86%", right: "20%" }, size: "64px" }
-            ],
-            items: {}
-        }]
-    },
-
-    left: {
-        type: "grid",
-        title: { text: "Equipment", span: `<i class="fa-solid fa-weight-hanging"></i> 45/120` },
-        layout: { scroll_x: "none", scroll_y: "scroll" },
-        groups: [
-            {
-                id: "vest",
-                title: "Tactical Vest",
-                span: `<i class="fa-solid fa-shield"></i>`,
-                layout: { columns: 10, rows: 10 },
-                collapsible: true,
-                collapsed: false,
-                items: [
-                    {
-                        id: "ammo_9mm",
-                        image: "/ui/assets/images/items/ammo_9mm.png",
-                        label: "9mm",
-                        col: 1, row: 1, w: 1, h: 1,
-                        quantity: 50,
-                        category: "ammunition",
-                        on_hover: {
-                            title: "9mm Ammunition",
-                            description: ["Standard 9mm rounds for pistols", "- Compatible with all 9mm weapons"],
-                            values: [
-                                { key: "Weight", value: "0.1kg" },
-                                { key: "Caliber", value: "9mm" }
-                            ],
-                            actions: [
-                                { id: "use_ammo", key: "E", label: "Load Magazine" },
-                                { id: "drop_ammo", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    },
-                    {
-                        id: "pistol_mag_extended",
-                        image: "/ui/assets/images/items/pistol_mag_extended.png",
-                        label: "Mag",
-                        col: 2, row: 1, w: 1, h: 2,
-                        quantity: 2,
-                        category: "magazine",
-                        on_hover: {
-                            title: "Extended Pistol Magazine",
-                            description: ["High-capacity magazine for pistols", "- Holds up to 30 rounds"],
-                            values: [
-                                { key: "Weight", value: "0.3kg" },
-                                { key: "Capacity", value: "30 rounds" },
-                                { key: "Caliber", value: "9mm" }
-                            ],
-                            actions: [
-                                { id: "equip_mag", key: "E", label: "Equip Magazine" },
-                                { id: "drop_mag", key: "G", label: "Drop" }
-                            ],
-                            rarity: "rare"
-                        }
-                    },
-                    {
-                        id: "tomato",
-                        image: "/ui/assets/images/items/tomato.png",
-                        label: "Tomato",
-                        col: 3, row: 1, w: 1, h: 1,
-                        quantity: 4,
-                        category: "medical",
-                        on_hover: {
-                            title: "Tomato",
-                            description: ["Basic wound dressing.", "- Stops bleeding"],
-                            values: [
-                                { key: "Weight", value: "0.05kg" },
-                                { key: "Category", value: "Medical" }
-                            ],
-                            actions: [
-                                { id: "use_tomato", key: "E", label: "Apply" },
-                                { id: "drop_tomato", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    }
-                ]
-            },
-            {
-                id: "backpack",
-                title: "Bag",
-                span: `<i class="fa-solid fa-bag-shopping"></i>`,
-                layout: { columns: 10, rows: 6 },
-                collapsible: true,
-                collapsed: false,
-                items: [
-                    {
-                        id: "cabbage",
-                        image: "/ui/assets/images/items/cabbage.png",
-                        label: "Cabbage",
-                        col: 1, row: 1, w: 2, h: 2,
-                        quantity: 5,
-                        category: "food",
-                        on_hover: {
-                            title: "Cabbage",
-                            description: ["Fresh cabbage. Restores hunger.", "- Grown locally"],
-                            values: [
-                                { key: "Weight", value: "0.5kg" },
-                                { key: "Hunger", value: "+15%" }
-                            ],
-                            actions: [
-                                { id: "eat_cabbage", key: "E", label: "Eat" },
-                                { id: "drop_cabbage", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    },
-                    {
-                        id: "corn",
-                        image: "/ui/assets/images/items/corn.png",
-                        label: "Corn",
-                        col: 3, row: 1, w: 1, h: 2,
-                        quantity: 8,
-                        category: "food",
-                        on_hover: {
-                            title: "Corn",
-                            description: ["Sweet corn. Can be eaten or cooked.", "- High calorie content"],
-                            values: [
-                                { key: "Weight", value: "0.3kg" },
-                                { key: "Hunger", value: "+10%" }
-                            ],
-                            actions: [
-                                { id: "eat_corn", key: "E", label: "Eat" },
-                                { id: "drop_corn", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    },
-                    {
-                        id: "water_bottle",
-                        image: "/ui/assets/images/items/water.png",
-                        label: "Water",
-                        col: 4, row: 1, w: 1, h: 2,
-                        quantity: 2,
-                        category: "drink",
-                        on_hover: {
-                            title: "Water Bottle",
-                            description: ["Clean drinking water.", "- Restores thirst"],
-                            values: [
-                                { key: "Weight", value: "0.5kg" },
-                                { key: "Thirst", value: "+40%" }
-                            ],
-                            actions: [
-                                { id: "drink_water", key: "E", label: "Drink" },
-                                { id: "drop_water", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    },
-                    {
-                        id: "weapon_pistol",
-                        image: "/ui/assets/images/items/weapon_pistol.png",
-                        label: "Pistol",
-                        col: 1, row: 3, w: 3, h: 2,
-                        quantity: 1,
-                        category: "weapon",
-                        progress: { value: 72 },
-                        on_hover: {
-                            title: "9mm Pistol",
-                            description: ["Compact sidearm stowed in backpack.", "- Reliable semi-automatic"],
-                            values: [
-                                { key: "Weight", value: "1.2kg" },
-                                { key: "Condition", value: "72%" },
-                                { key: "Caliber", value: "9mm" }
-                            ],
-                            actions: [
-                                { id: "equip_pistol", key: "E", label: "Equip" },
-                                { id: "drop_pistol", key: "G", label: "Drop" }
-                            ],
-                            rarity: "uncommon"
-                        }
-                    }
-                ]
-            },
-            {
-                id: "pockets",
-                title: "Pockets",
-                span: `<i class="fa-solid fa-hand"></i>`,
-                layout: { columns: 10, rows: 2, cell_size: "3vw" },
-                collapsible: true,
-                collapsed: false,
-                items: [
-                    {
-                        id: "weed",
-                        image: "/ui/assets/images/items/weed.png",
-                        label: "Weed",
-                        col: 1, row: 1, w: 1, h: 1,
-                        quantity: 3,
-                        category: "plant",
-                        on_hover: {
-                            title: "Cannabis",
-                            description: ["Medicinal plant material.", "- Has street value"],
-                            values: [
-                                { key: "Weight", value: "0.1kg" },
-                                { key: "Street Value", value: "$45" }
-                            ],
-                            actions: [
-                                { id: "use_weed", key: "E", label: "Use" },
-                                { id: "drop_weed", key: "G", label: "Drop" }
-                            ],
-                            rarity: "uncommon"
-                        }
-                    },
-                    {
-                        id: "cash",
-                        image: "/ui/assets/images/items/cash.png",
-                        label: "cash",
-                        col: 2, row: 1, w: 1, h: 1,
-                        quantity: 1,
-                        category: "misc",
-                        on_hover: {
-                            title: "Cash",
-                            description: ["Cash moves everything around me."],
-                            values: [
-                                { key: "Weight", value: "0.2kg" }
-                            ],
-                            actions: [
-                                { id: "use_cash", key: "E", label: "Use" },
-                                { id: "drop_cash", key: "G", label: "Drop" }
-                            ],
-                            rarity: "common"
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-
-    right: {
-        type: "grid",
-        section_key: "vehicle:trunk:ABC123",
-        title: { text: "Vicinity", span: `<i class="fa-solid fa-location-dot"></i> Ground` },
-        layout: { scroll_x: "none", scroll_y: "scroll", columns: 10, rows: 20 },
-        items: [
-            {
-                id: "weapon_pistol_ground",
-                image: "/ui/assets/images/items/weapon_pistol.png",
-                label: "Pistol",
-                col: 1, row: 1, w: 3, h: 2,
-                quantity: 1,
-                category: "weapon",
-                progress: { value: 55 },
-                on_hover: {
-                    title: "9mm Pistol",
-                    description: ["Found on the ground.", "- Showing signs of wear"],
-                    values: [
-                        { key: "Weight", value: "1.2kg" },
-                        { key: "Condition", value: "55%" },
-                        { key: "Caliber", value: "9mm" }
-                    ],
-                    actions: [{ id: "pickup_pistol", key: "E", label: "Pick Up" }],
-                    rarity: "uncommon"
-                }
-            },
-            {
-                id: "ammo_9mm_ground",
-                image: "/ui/assets/images/items/ammo_9mm.png",
-                label: "9mm",
-                col: 4, row: 1, w: 1, h: 1,
-                quantity: 48,
-                category: "ammunition",
-                on_hover: {
-                    title: "9mm Ammunition",
-                    description: ["Standard 9mm rounds."],
-                    values: [
-                        { key: "Weight", value: "0.1kg" },
-                        { key: "Caliber", value: "9mm" }
-                    ],
-                    actions: [{ id: "pickup_ammo", key: "E", label: "Pick Up" }],
-                    rarity: "common"
-                }
-            },
-            {
-                id: "cabbage_ground",
-                image: "/ui/assets/images/items/cabbage.png",
-                label: "Cabbage",
-                col: 5, row: 1, w: 2, h: 2,
-                quantity: 3,
-                category: "food",
-                on_hover: {
-                    title: "Cabbage",
-                    description: ["Fresh cabbage. Restores hunger."],
-                    values: [
-                        { key: "Weight", value: "0.5kg" },
-                        { key: "Hunger", value: "+15%" }
-                    ],
-                    actions: [{ id: "pickup_cabbage", key: "E", label: "Pick Up" }],
-                    rarity: "common"
-                }
-            }
-        ]
-    }
-};
 
 const input_groups_test = {
     index: 2,
@@ -746,70 +164,7 @@ const cards_test = {
     }
 };
 
-const hotbar_config = {
-    slot_count: 8,
-    show_slot_numbers: true,
-    layout: { slot_size: "58px" },
-    items: {
-        "1": {
-            id: "weapon_pistol",
-            image: "/ui/assets/images/items/weapon_pistol.png",
-            quantity: 1,
-            category: "weapon",
-            progress: { value: 72 },
-            on_hover: {
-                title: "9mm Pistol",
-                description: ["Holstered sidearm.", "- Reliable semi-automatic pistol", "- Standard issue sidearm"],
-                values: [
-                    { key: "Weight", value: "1.2kg" },
-                    { key: "Condition", value: "72%" },
-                    { key: "Caliber", value: "9mm" },
-                    { key: "Category", value: "Weapon" }
-                ],
-                actions: [
-                    { id: "equip_pistol", key: "E", label: "Equip" },
-                    { id: "drop_pistol", key: "G", label: "Drop" }
-                ],
-                rarity: "uncommon"
-            }
-        },
-        "2": {
-            id: "tomato",
-            image: "/ui/assets/images/items/tomato.png",
-            quantity: 4,
-            category: "medical",
-            on_hover: {
-                title: "Tomato",
-                description: ["Basic wound dressing."],
-                values: [{ key: "Weight", value: "0.05kg" }],
-                actions: [{ id: "use_tomato", key: "E", label: "Apply" }],
-                rarity: "common"
-            }
-        }
-    }
-};
-
-
 /*
-const test_popup = new InventorySlot({ position: 'bottom-center' });
-
-window.test_slot_popup = () => {
-    const test_items = [
-        { item_id: "water", image: "/ui/assets/images/items/water.png", quantity: 5, action: "added", rarity: "common" },
-        { item_id: "weapon_pistol", image: "/ui/assets/images/items/weapon_pistol.png", quantity: 1, action: "added", rarity: "rare" },
-        { item_id: "cash", image: "/ui/assets/images/items/cash.png", quantity: 100, action: "removed", rarity: "uncommon" },
-        { item_id: "ammo_9mm", image: "/ui/assets/images/items/ammo_9mm.png", quantity: 50, action: "added", rarity: "legendary" }
-    ];
-
-    let delay = 0;
-    test_items.forEach((item, index) => {
-        setTimeout(() => {
-            test_popup.show(item);
-        }, delay);
-        delay += 5000;
-    });
-};
-
 const test_prog_circle = new ProgressCircle({
     message: "Repairing vehicle...",
     duration: 99,
@@ -833,9 +188,45 @@ test_kv_display.set_kvps("PLACEMENT MODE", [
 test_kv_display.show();
 
 const test_prog_bar = new ProgressBar({ header: "Uploading...", duration: 800000 });
+
+const notify = new Notify({
+    position: "right-center",
+    fill_direction: "up"
+});
+
+notify.show({
+    type: "success",
+    header: "Success",
+    message: "Operation completed successfully.",
+    icon: "fa-solid fa-check-circle",
+    duration: 50000
+});
+
+notify.show({
+    type: "error",
+    header: "Error",
+    message: "Something went wrong.",
+    icon: "fa-solid fa-times-circle",
+    duration: 80000
+});
+
+notify.show({
+    type: "warning",
+    header: "Warning",
+    message: "Some basic regular notification.",
+    icon: "fa-solid fa-exclamation-circle",
+    duration: 0
+});
+
+notify.show({
+    type: "info",
+    message: "Some basic regular notification.",
+    icon: "fa-solid fa-exclamation-circle",
+    duration: 0
+});
 */
 
-
+/*
 $(document).ready(() => {
     const builder = new UIBuilder({
         header: {
@@ -882,11 +273,10 @@ $(document).ready(() => {
 
         content: {
             pages: {
-                inventory_page: GRID_MODE ? inventory_grid_page : inventory_slots_page,
                 input_groups_test,
                 cards_test
-            },
-            hotbar: hotbar_config
+            }
         }
     });
 });
+*/

@@ -63,7 +63,7 @@ export class UIBuilder {
 
     build_content() {
         if (!this.content_config.pages || typeof this.content_config.pages !== "object") return this.set_content();
-        this.content = new Content(this.content_config.pages, "builder_content", undefined, this.content_config.hotbar);
+        this.content = new Content(this.content_config.pages, "builder_content");
         this.content.append_to("#content_container");
 
         const default_tab = this.get_default_page();

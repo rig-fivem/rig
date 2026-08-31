@@ -16,7 +16,6 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 .notify {
     background: var(--background_main);
     border: 0.1vh solid rgba(255, 255, 255, 0.06);
-    border-top: 0.1vh solid var(--accent);
     color: var(--text_primary);
     min-width: 15vw;
     max-width: 30vw;
@@ -32,14 +31,13 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 .notify_header {
     font-family: var(--header_font);
-    font-size: 0.78rem;
+    font-size: 1rem;
     color: var(--text_primary);
     text-transform: uppercase;
-    letter-spacing: 0.08rem;
     display: flex;
     align-items: center;
-    gap: 1vh;
-    padding: 0.75vh 1vh 0.25vh;
+    gap: 0.5vh;
+    padding: 0.5vh 1vh 0.25vh;
 }
 
 .notify_body {
@@ -68,23 +66,41 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 .notify_icon {
     font-size: 0.85rem;
-    background: var(--background_panel);
-    border: 0.1vh solid rgba(255, 255, 255, 0.06);
-    padding: 0.5vh;
+    padding: 0.25vh;
     flex-shrink: 0;
+    margin-top: 0.1vh;
 }
 
-.notify_success { border-top-color: var(--notify_success); }
-.notify_error   { border-top-color: var(--notify_error); }
-.notify_info    { border-top-color: var(--notify_info); }
-.notify_warning { border-top-color: var(--notify_warning); }
-.notify_primary { border-top-color: var(--notify_primary); }
+.notify_icon_img,
+.notify_icon_svg {
+    width: 1.6vh;
+    height: 1.6vh;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notify_icon_img {
+    object-fit: contain;
+}
+
+.notify_icon_svg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
 
 .notify_success .notify_icon { color: var(--notify_success); }
 .notify_error   .notify_icon { color: var(--notify_error); }
 .notify_info    .notify_icon { color: var(--notify_info); }
 .notify_warning .notify_icon { color: var(--notify_warning); }
 .notify_primary .notify_icon { color: var(--notify_primary); }
+
+.notify_success .notify_icon_svg svg { fill: var(--notify_success); }
+.notify_error   .notify_icon_svg svg { fill: var(--notify_error); }
+.notify_info    .notify_icon_svg svg { fill: var(--notify_info); }
+.notify_warning .notify_icon_svg svg { fill: var(--notify_warning); }
+.notify_primary .notify_icon_svg svg { fill: var(--notify_primary); }
 
 .notify_success .notify_fill { background: var(--notify_success); }
 .notify_error   .notify_fill { background: var(--notify_error); }

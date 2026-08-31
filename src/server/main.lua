@@ -28,6 +28,10 @@ AddEventHandler("playerJoining", function()
         if core.users:activate(_src, ids.license) then
             core.players:create(_src)
             core.players:assign_personal_bucket(_src)
+
+            local p = core.players:get(_src)
+            p:emit("loaded")
+
             _cmds.push_command_suggestion(_src)
         end
     end
@@ -51,7 +55,8 @@ AddEventHandler("onResourceStart", function(res)
     local extensions = {
         { name = "avatar", priority = 100 },
         { name = "statuses", priority = 99 },
-        { name = "spawns", priority = 98 }
+        { name = "spawns", priority = 98 },
+        { name = "inventory", priority = 97 }
     }
 
     for _, ext in ipairs(extensions) do

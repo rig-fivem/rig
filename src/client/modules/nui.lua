@@ -28,13 +28,13 @@ end
 
 function m.call_registered_function(label, data)
     if not label then
-        print("error", "nui: label is required")
+        log("error", "nui: label is required")
         return false
     end
 
     local func = functions[label]
     if not func then
-        print("error", ("nui: no function registered for label '%s'"):format(label))
+        log("error", ("nui: no function registered for label '%s'"):format(label))
         return false
     end
 
@@ -65,7 +65,7 @@ end
 
 function m.notify(opts)
     if not opts then
-        print("error", "nui: notify called with missing opts")
+        log("error", "nui: notify called with missing opts")
         return
     end
 
@@ -81,13 +81,13 @@ exports("notify", m.notify)
 
 function m.build_modal(opts)
     if not opts then
-        print("error", "nui: build_modal called with missing opts")
+        log("error", "nui: build_modal called with missing opts")
         return
     end
 
     local safe_opts = m.sanitize(opts, "modal")
     if not safe_opts then
-        print("error", "nui: build_modal sanitize failed")
+        log("error", "nui: build_modal sanitize failed")
         return
     end
 
@@ -147,7 +147,7 @@ end
 
 function m.progress_bar(opts)
     if not opts then
-        print("error", "nui: progress_bar called with missing opts")
+        log("error", "nui: progress_bar called with missing opts")
         return
     end
 
@@ -165,7 +165,7 @@ end
 
 function m.progress_circle(opts)
     if not opts then
-        print("error", "nui: progress_circle called with missing opts")
+        log("error", "nui: progress_circle called with missing opts")
         return
     end
 
@@ -183,13 +183,13 @@ end
 
 function m.build_ui(ui)
     if not ui then
-        print("error", "nui: build_ui called with missing ui")
+        log("error", "nui: build_ui called with missing ui")
         return
     end
 
     local safe_ui = m.sanitize(ui, "ui")
     if not safe_ui then
-        print("error", "nui: build_ui sanitize failed")
+        log("error", "nui: build_ui sanitize failed")
         return
     end
 
@@ -254,12 +254,12 @@ end
 --- @section NUI Callbacks
 
 RegisterNUICallback("nui:remove_focus", function()
-    print("info", "nui: focus cleared")
+    log("info", "nui: focus cleared")
     SetNuiFocus(false, false)
 end)
 
 RegisterNUICallback("nui:handler", function(data, cb)
-    print("info", ("nui: handler invoked with %s"):format(json.encode(data)))
+    log("info", ("nui: handler invoked with %s"):format(json.encode(data)))
 
     if not data or not data.action then
         if cb then cb(false) end
@@ -269,7 +269,7 @@ RegisterNUICallback("nui:handler", function(data, cb)
     if m.has_function(data.action) then
         local success, result = pcall(m.call_registered_function, data.action, data)
         if not success then
-            print("error", ("nui: handler failed for action '%s': %s"):format(data.action, result))
+            log("error", ("nui: handler failed for action '%s': %s"):format(data.action, result))
         end
     else
         TriggerServerEvent("rig:server:nui_handler", data)
@@ -289,13 +289,13 @@ RegisterNetEvent("rig:client:remove_focus", function()
 end)
 
 RegisterNetEvent("rig:client:notify", function(opts)
-    if not opts then return print("error", "nui: notify event missing opts") end
+    if not opts then return log("error", "nui: notify event missing opts") end
 
     m.notify(opts)
 end)
 
 RegisterNetEvent("rig:client:build_modal", function(opts)
-    if not opts then return print("error", "nui: build_modal event missing opts") end
+    if not opts then return log("error", "nui: build_modal event missing opts") end
 
     m.build_modal(opts)
 end)
@@ -306,7 +306,7 @@ RegisterNetEvent("rig:client:close_modal", function(container)
 end)
 
 RegisterNetEvent("rig:client:build_ui", function(opts)
-    if not opts then return print("error", "nui: build_ui event missing opts") end
+    if not opts then return log("error", "nui: build_ui event missing opts") end
 
     m.build_ui(opts)
 end)

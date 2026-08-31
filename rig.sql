@@ -137,3 +137,19 @@ CREATE TABLE IF NOT EXISTS `effects` (
     KEY `expires_at_idx` (`expires_at`),
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `inventories` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `identifier` VARCHAR(255) NOT NULL,
+    `owner` VARCHAR(255) NOT NULL,
+    `inventory_type` VARCHAR(50) NOT NULL DEFAULT 'player',
+    `inventory_subtype` VARCHAR(50) DEFAULT NULL,
+    `items` JSON NOT NULL DEFAULT (JSON_OBJECT()),
+    `metadata` JSON DEFAULT (JSON_OBJECT()),
+    `last_update` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `identifier_unique` (`identifier`),
+    KEY `owner_idx` (`owner`),
+    KEY `inventory_type_inventory_subtype_idx` (`inventory_type`, `inventory_subtype`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
