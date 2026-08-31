@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig_avatars-cfx/blob/main/LICENSE
 ]]
 
 --- @module avatars
---- @file configs/avatars.lua
+--- @file src/shared/data/avatars.lua
 --- @description Handles locations for creator and default avatar styles for mp_""_freemode peds.
 
 return {

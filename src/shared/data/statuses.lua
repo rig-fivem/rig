@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig_avatars-cfx/blob/main/LICENSE
 ]]
 
 --- @module statuses
---- @file configs/statuses.lua
+--- @file src/shared/data/statuses.lua
 --- @description Handles default statuses and injuries.
 --- You probably dont want to change these
 

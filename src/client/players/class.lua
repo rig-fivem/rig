@@ -12,8 +12,10 @@ Player.__index = Player
 function Player.new()
     log("debug", "Initialised client Player instance")
     return setmetatable({
-        loaded = false,
-        playing = false,
+        flags = {
+            loaded = false,
+            playing = false
+        },
         data = {}
     }, Player)
 end
@@ -27,29 +29,29 @@ end
 --- @section State
 
 function Player:has_loaded()
-    return self.loaded == true
+    return self.flags.loaded == true
 end
 
 function Player:set_loaded(state)
     local is_loaded = state == true
-    if self.loaded == is_loaded then return end
+    if self.flags.loaded == is_loaded then return end
 
-    self.loaded = is_loaded
-    log("info", ("Client player loaded state updated to: %s"):format(tostring(self.loaded)))
-    self:emit("loaded_state_changed", self.loaded)
+    self.flags.loaded = is_loaded
+    log("info", ("Client player loaded state updated to: %s"):format(tostring(self.flags.loaded)))
+    self:emit("loaded_state_changed", self.flags.loaded)
 end
 
 function Player:is_playing()
-    return self.playing == true
+    return self.flags.playing == true
 end
 
 function Player:set_playing(state)
     local is_playing = state == true
-    if self.playing == is_playing then return end
+    if self.flags.playing == is_playing then return end
 
-    self.playing = is_playing
-    log("info", ("Client player playing state updated to: %s"):format(tostring(self.playing)))
-    self:emit("playing_changed", self.playing)
+    self.flags.playing = is_playing
+    log("info", ("Client player playing state updated to: %s"):format(tostring(self.flags.playing)))
+    self:emit("playing_changed", self.flags.playing)
 end
 
 --- @section Data

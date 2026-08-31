@@ -15,15 +15,12 @@ _G.__server_players_module = m
 
 --- @section Getters
 
--- Internal use only (same-runtime callers) — NOT exported.
--- Returns the raw Player object with live methods intact.
--- Exporting this would strip its metatable/methods on the way out.
 function m.get_player(source)
-    return rig.players:get(source)
+    return core.players:get(source)
 end
 
 function m.get_players()
-    return rig.players:get_all()
+    return core.players:get_all()
 end
 
 function m.get_player_identifier(source, id_type)
@@ -48,7 +45,7 @@ end
 --- @section Buckets
 
 function m.get_player_bucket(source)
-    return rig.players:get_bucket(source)
+    return core.players:get_bucket(source)
 end
 
 function m.set_player_bucket(source, bucket_id)
@@ -57,27 +54,27 @@ function m.set_player_bucket(source, bucket_id)
         return false
     end
 
-    return rig.players:set_bucket(source, bucket_id)
+    return core.players:set_bucket(source, bucket_id)
 end
 
 function m.assign_personal_bucket(source)
-    return rig.players:assign_personal_bucket(source)
+    return core.players:assign_personal_bucket(source)
 end
 
 --- @section State
 
 function m.has_player_loaded(source)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     return p ~= nil and p:has_loaded()
 end
 
 function m.is_player_playing(source)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     return p ~= nil and p:is_playing()
 end
 
 function m.set_player_playing(source, state)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: set_player_playing failed | Reason: no player instance for source %d"):format(source))
         return false
@@ -90,18 +87,18 @@ end
 --- @section Data
 
 function m.get_player_data(source, category)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then return nil end
     return p:get_data(category)
 end
 
 function m.has_player_data(source, category)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     return p ~= nil and p:has_data(category)
 end
 
 function m.add_player_data(source, category, value, replicate)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: add_player_data failed | Reason: no player instance for source %d"):format(source))
         return false
@@ -111,7 +108,7 @@ function m.add_player_data(source, category, value, replicate)
 end
 
 function m.set_player_data(source, category, updates, sync_data)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: set_player_data failed | Reason: no player instance for source %d"):format(source))
         return false
@@ -121,7 +118,7 @@ function m.set_player_data(source, category, updates, sync_data)
 end
 
 function m.replace_player_data(source, category, data, sync_data)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: replace_player_data failed | Reason: no player instance for source %d"):format(source))
         return false
@@ -131,7 +128,7 @@ function m.replace_player_data(source, category, data, sync_data)
 end
 
 function m.remove_player_data(source, category)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: remove_player_data failed | Reason: no player instance for source %d"):format(source))
         return false
@@ -141,7 +138,7 @@ function m.remove_player_data(source, category)
 end
 
 function m.sync_player_data(source, category)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: sync_player_data failed | Reason: no player instance for source %d"):format(source))
         return false
@@ -152,7 +149,7 @@ function m.sync_player_data(source, category)
 end
 
 function m.save_player(source)
-    local p = rig.players:get(source)
+    local p = core.players:get(source)
     if not p then
         log("warn", ("Function: save_player failed | Reason: no player instance for source %d"):format(source))
         return false

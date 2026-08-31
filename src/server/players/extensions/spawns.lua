@@ -2,10 +2,6 @@
 --- @file src/server/players/extensions/spawn.lua
 --- @description Player spawn extension for managing spawn locations.
 
---- @section Imports
-
-local _cfg_spawns = require("configs.spawns")
-
 --- @section Initialisation
 
 local Spawn = {}
@@ -23,7 +19,6 @@ end
 
 local function validate_spawn(spawn_data)
     if not spawn_data or type(spawn_data) ~= "table" then return nil end
-    if not _cfg_spawns.types[spawn_data.spawn_type] then return nil end
 
     return {
         spawn_type = spawn_data.spawn_type,
@@ -138,8 +133,9 @@ end
 
 function Spawn:spawn_player(coords)
     local player = self.player
-    local ped = GetPlayerPed(player.source)
+    if player:is_playing() then return false end
 
+    local ped = GetPlayerPed(player.source)
     if player.statuses and player.statuses:is_dead() then
         player.statuses:respawn()
     end
@@ -148,10 +144,12 @@ function Spawn:spawn_player(coords)
     SetEntityCoords(ped, coords.x, coords.y, coords.z, false, false, false, false)
     SetEntityHeading(ped, coords.w or 0.0)
 
-    core.players:set_bucket(player.source, 0) -- @todo swap to main bucket when readd bucket routing
+    core.players:set_bucket(player.source, 0)
     player:set_playing(true)
+    player:set_awaiting_spawn(true)
 
     TriggerClientEvent("rig:client:find_ground_and_spawn", player.source)
+    return true
 end
 
 --- @section Clean Up

@@ -26,8 +26,11 @@ function Player.new(source, user)
     }, Player)
 
     private[self] = {
-        loaded = false,
-        playing = false,
+        flags = {
+            loaded = false,
+            playing = false,
+            awaiting_spawn = false,
+        },
         data = {},
         replicated = {},
         extensions = {}
@@ -64,7 +67,7 @@ function Player:load()
         end
     end
 
-    priv.loaded = true
+    priv.flags.loaded = true
     self:emit("loaded")
     log("success", ("Player instance for source %d loaded successfully"):format(self.source))
     return true
@@ -131,20 +134,31 @@ end
 
 function Player:has_loaded()
     local priv = priv_of(self)
-    return priv ~= nil and priv.loaded == true
+    return priv ~= nil and priv.flags.loaded == true
 end
 
 function Player:is_playing()
     local priv = priv_of(self)
-    return priv ~= nil and priv.playing == true
+    return priv ~= nil and priv.flags.playing == true
 end
 
 function Player:set_playing(state)
     local priv = priv_of(self)
     if not priv then return end
-    priv.playing = state
+    priv.flags.playing = state
     TriggerClientEvent("rig:client:player_playing_state_changed", self.source, state)
     self:emit("playing_state_changed", state)
+end
+
+function Player:is_awaiting_spawn()
+    local priv = priv_of(self)
+    return priv ~= nil and priv.flags.awaiting_spawn == true
+end
+
+function Player:set_awaiting_spawn(state)
+    local priv = priv_of(self)
+    if not priv then return end
+    priv.flags.awaiting_spawn = state
 end
 
 --- @section Data

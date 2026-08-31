@@ -1,6 +1,10 @@
 --- @file src/client/players/events.lua
 --- @description Handles client player events.
 
+--- @section Imports
+
+local _cam = require("src.client.modules.camera")
+
 --- @section Player States
 
 RegisterNetEvent("rig:client:player_loaded")
@@ -50,4 +54,39 @@ AddEventHandler("rig:client:sync_player_data", function(payload)
     end
 
     core.client_player:sync(payload)
+end)
+
+--- @section Spawns
+
+RegisterNetEvent("rig:client:find_ground_and_spawn", function()
+    local ped = PlayerPedId()
+    local coords = GetEntityCoords(ped)
+
+    Wait(100)
+
+    RequestCollisionAtCoord(coords.x, coords.y, coords.z)
+    local attempts = 0
+    repeat
+        Wait(100)
+        attempts = attempts + 1
+    until HasCollisionLoadedAroundEntity(ped) or attempts >= 30
+
+    local found, ground_z
+    attempts = 0
+    repeat
+        found, ground_z = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z, false)
+        attempts = attempts + 1
+        Wait(100)
+    until found or attempts >= 20
+
+    if found then
+        SetEntityCoords(ped, coords.x, coords.y, ground_z + 0.5, false, false, false, false)
+    end
+
+    FreezeEntityPosition(ped, false)
+    SetEntityVisible(ped, true)
+
+    _cam.destroy_cam()
+
+    if IsScreenFadedOut() then DoScreenFadeIn(1000) end
 end)

@@ -64,147 +64,142 @@ export class Content {
     }
 
     async show_page(id) {
-    this.current_page_id = id;
+        this.current_page_id = id;
 
-    const config = this.pages[id];
-    if (!config || typeof config !== "object") {
-        $(".content_body.center").html(`<div class="placeholder_content"></div>`);
-        return;
-    }
+        const config = this.pages[id];
+        if (!config || typeof config !== "object") {
+            $(".content_body.center").html(`<div class="placeholder_content"></div>`);
+            return;
+        }
 
-    if (!this.page_items[id]) {
-        this.page_items[id] = { left: {}, center: {}, right: {} };
+        if (!this.page_items[id]) {
+            this.page_items[id] = { left: {}, center: {}, right: {} };
 
-        for (const section of ["left", "center", "right"]) {
-            const sec = config[section];
-            if (!sec) continue;
+            for (const section of ["left", "center", "right"]) {
+                const sec = config[section];
+                if (!sec) continue;
 
-            if (sec.groups) {
-                sec.groups.forEach(group => {
-                    const group_id = group.id;
-                    if (group.items) {
-                        this.page_items[id][section][group_id] =
-                            JSON.parse(JSON.stringify(group.items));
-                    }
-                });
-            } else if (sec.items) {
-                this.page_items[id][section]["_default"] =
-                    JSON.parse(JSON.stringify(sec.items));
+                if (sec.groups) {
+                    sec.groups.forEach(group => {
+                        const group_id = group.id;
+                        if (group.items) {
+                            this.page_items[id][section][group_id] =
+                                JSON.parse(JSON.stringify(group.items));
+                        }
+                    });
+                } else if (sec.items) {
+                    this.page_items[id][section]["_default"] =
+                        JSON.parse(JSON.stringify(sec.items));
+                }
             }
         }
-    }
 
-    const slots_instances = [];
-    const grid_instances = [];
+        const slots_instances = [];
+        const grid_instances = [];
 
-    for (const s of ["left", "center", "right"]) {
-        $(`.content_section.${s}`).hide();
-    }
-
-    const layout = config.layout || this.layout;
-    const content_keys = ["left", "center", "right"];
-    let current_col = 1;
-
-    for (const key of Object.keys(layout)) {
-        const span = Number(layout[key]) || 0;
-        if (span <= 0) continue;
-
-        if (!content_keys.includes(key)) {
-            current_col += span; // unnamed/spacer key - just eat the columns
-            continue;
+        for (const s of ["left", "center", "right"]) {
+            $(`.content_section.${s}`).hide();
         }
 
-        const section = config[key] || null;
-        const $section = $(`.content_section.${key}`);
-        const $title = $section.find(`.content_title.${key}`);
-        const $body = $section.find(`.content_body.${key}`);
+        const layout = config.layout || this.layout;
+        const content_keys = ["left", "center", "right"];
+        let current_col = 1;
 
-        $section.css("grid-column", `${current_col} / span ${span}`).show();
-        $title.empty();
-        $body.empty();
+        for (const key of content_keys) {
+            const span = Number(layout[key]) || 0;
+            if (span <= 0) continue;
 
-        if (!section) {
-            $body.html(`<div class="placeholder_section"></div>`);
-            current_col += span;
-            continue;
-        }
+            const section = config[key] || null;
+            const $section = $(`.content_section.${key}`);
+            const $title = $section.find(`.content_title.${key}`);
+            const $body = $section.find(`.content_body.${key}`);
 
-        if (section.title) {
-            $title.html(
-                typeof section.title === "object"
-                    ? `<h3>${section.title.text}${section.title.span ? ` <span>${section.title.span}</span>` : ""}</h3>`
-                    : `<h3>${section.title}</h3>`
-            );
-        }
+            $section.css("grid-column", `${current_col} / span ${span}`).show();
+            $title.empty();
+            $body.empty();
 
-        if (section.type === "slots") {
-            const slots_instance = new InventorySlot({
-                ...section,
-                section_key: key,
-                page_items: this.page_items[id][key],
-                on_swap: this.create_unified_swap_handler(),
-                on_drop_to_grid: this.create_slot_to_grid_handler()
-            });
-            slots_instance.render_to($body);
-            slots_instances.push(slots_instance);
-        } else if (section.type === "grid") {
-            if (section.groups) {
-                const $groups_wrapper = $(`<div class="grid_groups_wrapper"></div>`);
-                $body.append($groups_wrapper);
+            if (!section) {
+                $body.html(`<div class="placeholder_section"></div>`);
+                current_col += span;
+                continue;
+            }
 
-                for (const group of section.groups) {
-                    const group_key = `${key}_${group.id}`;
-                    const container_id = `grid_group_${group_key}`;
-                    const collapsible = group.collapsible !== false;
-                    const collapsed = group.collapsed === true;
-                    const span_html = group.span ? `<span>${group.span}</span>` : "";
-                    const title_html = group.title ? `<div class="grid_group_title${collapsible ? " collapsible" : ""}" data-target="${container_id}"><div class="grid_group_title_inner"><div class="grid_group_title_label">${group.title}</div></div>${span_html}</div>` : "";
+            if (section.title) {
+                $title.html(
+                    typeof section.title === "object"
+                        ? `<h3>${section.title.text}${section.title.span ? ` <span>${section.title.span}</span>` : ""}</h3>`
+                        : `<h3>${section.title}</h3>`
+                );
+            }
 
-                    const $group_el = $(`<div class="grid_group">${title_html}<div class="grid_container${collapsed ? " collapsed" : ""}" id="${container_id}"></div></div>`);
-                    $groups_wrapper.append($group_el);
+            if (section.type === "slots") {
+                const slots_instance = new InventorySlot({
+                    ...section,
+                    section_key: key,
+                    page_items: this.page_items[id][key],
+                    on_swap: this.create_unified_swap_handler(),
+                    on_drop_to_grid: this.create_slot_to_grid_handler()
+                });
+                slots_instance.render_to($body);
+                slots_instances.push(slots_instance);
+            } else if (section.type === "grid") {
+                if (section.groups) {
+                    const $groups_wrapper = $(`<div class="grid_groups_wrapper"></div>`);
+                    $body.append($groups_wrapper);
 
-                    const items = this.page_items[id][key][group.id] || [];
-                    const grid_instance = new InventoryGrid({
-                        layout: { ...(section.layout || {}), ...(group.layout || {}) },
-                        items: Array.isArray(items) ? items : Object.values(items),
-                        section_key: group_key,
-                        on_move: this.create_move_handler(id),
-                        on_drop_to_slot: this.create_grid_to_hotbar_handler(),
-                        draggable: group.draggable ?? true
+                    for (const group of section.groups) {
+                        const group_key = `${key}_${group.id}`;
+                        const container_id = `grid_group_${group_key}`;
+                        const collapsible = group.collapsible !== false;
+                        const collapsed = group.collapsed === true;
+                        const span_html = group.span ? `<span>${group.span}</span>` : "";
+                        const title_html = group.title ? `<div class="grid_group_title${collapsible ? " collapsible" : ""}" data-target="${container_id}"><div class="grid_group_title_inner"><div class="grid_group_title_label">${group.title}</div></div>${span_html}</div>` : "";
+
+                        const $group_el = $(`<div class="grid_group">${title_html}<div class="grid_container${collapsed ? " collapsed" : ""}" id="${container_id}"></div></div>`);
+                        $groups_wrapper.append($group_el);
+
+                        const items = this.page_items[id][key][group.id] || [];
+                        const grid_instance = new InventoryGrid({
+                            layout: { ...(section.layout || {}), ...(group.layout || {}) },
+                            items: Array.isArray(items) ? items : Object.values(items),
+                            section_key: group_key,
+                            on_move: this.create_move_handler(id),
+                            on_drop_to_slot: this.create_grid_to_hotbar_handler(),
+                            draggable: group.draggable ?? true
+                        });
+                        grid_instance.render_to(`#${container_id}`);
+                        grid_instances.push(grid_instance);
+                    }
+
+                    $groups_wrapper.on("click", ".grid_group_title.collapsible", function() {
+                        $(`#${$(this).data("target")}`).toggleClass("collapsed");
                     });
-                    grid_instance.render_to(`#${container_id}`);
+                } else {
+                    const items = this.page_items[id][key]["_default"] || [];
+                    const flat_container_id = `grid_flat_${key}`;
+                    $body.append(`<div class="grid_container" id="${flat_container_id}"></div>`);
+                    const grid_instance = new InventoryGrid({
+                        layout: section.layout || {},
+                        section_key: section.section_key || key,
+                        items: Array.isArray(items) ? items : Object.values(items),
+                        on_move: this.create_move_handler(id),
+                        on_drop_to_slot: this.create_grid_to_hotbar_handler()
+                    });
+                    grid_instance.render_to(`#${flat_container_id}`);
                     grid_instances.push(grid_instance);
                 }
-
-                $groups_wrapper.on("click", ".grid_group_title.collapsible", function() {
-                    $(`#${$(this).data("target")}`).toggleClass("collapsed");
-                });
             } else {
-                const items = this.page_items[id][key]["_default"] || [];
-                const flat_container_id = `grid_flat_${key}`;
-                $body.append(`<div class="grid_container" id="${flat_container_id}"></div>`);
-                const grid_instance = new InventoryGrid({
-                    layout: section.layout || {},
-                    section_key: section.section_key || key,
-                    items: Array.isArray(items) ? items : Object.values(items),
-                    on_move: this.create_move_handler(id),
-                    on_drop_to_slot: this.create_grid_to_hotbar_handler()
-                });
-                grid_instance.render_to(`#${flat_container_id}`);
-                grid_instances.push(grid_instance);
+                const html = await this.render_content(section);
+                $body.html(html);
             }
-        } else {
-            const html = await this.render_content(section);
-            $body.html(html);
+
+            current_col += span;
         }
 
-        current_col += span;
+        this.current_slots_instances = slots_instances;
+        this.current_grid_instances = grid_instances;
+        window.ui_instance?.tooltip?.bind_tooltips();
     }
-
-    this.current_slots_instances = slots_instances;
-    this.current_grid_instances = grid_instances;
-    window.ui_instance?.tooltip?.bind_tooltips();
-}
 
     create_unified_swap_handler() {
         return async (from_slot_num, to_slot_num, from_group_id, to_group_id, from_section, to_section) => {
@@ -423,7 +418,6 @@ export class Content {
     on_item_moved(move_data) {
         send_nui_callback("slots_moved_item", move_data);
     }
-
 
     on_grid_item_moved(move_data) {
         send_nui_callback("grid_moved_item", move_data);

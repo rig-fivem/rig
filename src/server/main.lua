@@ -13,14 +13,6 @@ local _utils = require("src.server.modules.utils")
 core.users = UserRegistry.new()
 core.players = PlayerRegistry.new()
 
---- @section Events
-
-RegisterServerEvent("rig:server:disconnect", function()
-    local _src = source
-    local msg = locale and locale("server.players.disconnected") or "Disconnected."
-    DropPlayer(_src, msg)
-end)
-
 --- @section FiveM Events
 
 AddEventHandler("playerConnecting", function(name, kick, deferrals)
@@ -58,7 +50,8 @@ AddEventHandler("onResourceStart", function(res)
     local base_path = "src.server.players.extensions"
     local extensions = {
         { name = "avatar", priority = 100 },
-        { name = "statuses", priority = 99 }
+        { name = "statuses", priority = 99 },
+        { name = "spawns", priority = 98 }
     }
 
     for _, ext in ipairs(extensions) do

@@ -4,13 +4,13 @@
 
 --- @section Imports
 
-local _cfg_statuses = require("configs.statuses")
+local _statuses_data = require("src.shared.data.statuses")
 local _cfg_effects = require("configs.effects")
 
 --- @section Constants
 
-local DEFAULT_STATUSES = _cfg_statuses.statuses
-local DEFAULT_INJURIES = _cfg_statuses.injuries
+local DEFAULT_STATUSES = _statuses_data.statuses
+local DEFAULT_INJURIES = _statuses_data.injuries
 
 local STATUS_RANGES = {
     health = { min = 0.0, max = 200.0 },
