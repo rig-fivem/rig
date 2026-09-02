@@ -102,7 +102,7 @@ function m.apply_player_status_effect(source, effect_name, opts)
         return false
     end
 
-    return p.statuses:apply_effect(effect_name, opts)
+    return p.statuses:add_effect(effect_name, opts)
 end
 
 function m.remove_player_status_effect(source, effect_name)

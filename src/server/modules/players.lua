@@ -159,6 +159,34 @@ function m.save_player(source)
     return true
 end
 
+--- @section Methods
+
+function m.add_player_method(source, name, fn)
+    local p = core.players:get(source)
+    if not p then
+        log("warn", ("Function: add_player_method failed | Reason: no player instance for source %d"):format(source))
+        return false
+    end
+
+    return p:add_method(name, fn)
+end
+
+function m.remove_player_method(source, name)
+    local p = core.players:get(source)
+    if not p then
+        log("warn", ("Function: remove_player_method failed | Reason: no player instance for source %d"):format(source))
+        return false
+    end
+
+    return p:remove_method(name)
+end
+
+function m.get_player_method(source, name)
+    local p = core.players:get(source)
+    if not p then return nil end
+    return p:get_method(name)
+end
+
 --- @section Exports
 
 exports("get_players", m.get_players)
@@ -178,5 +206,8 @@ exports("replace_player_data", m.replace_player_data)
 exports("remove_player_data", m.remove_player_data)
 exports("sync_player_data", m.sync_player_data)
 exports("save_player", m.save_player)
+exports("add_player_method", m.add_player_method)
+exports("remove_player_method", m.remove_player_method)
+exports("get_player_method", m.get_player_method)
 
 return m

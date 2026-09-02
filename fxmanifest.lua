@@ -25,10 +25,7 @@ files {
     "ui/**/*",
 }
 
-shared_scripts {
-    "configs/*.lua",
-    "init.lua"
-}
+shared_script "init.lua"
 
 server_scripts {
     "src/server/modules/*.lua",

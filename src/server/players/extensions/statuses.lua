@@ -5,7 +5,6 @@
 --- @section Imports
 
 local _statuses_data = require("src.shared.data.statuses")
-local _cfg_effects = require("configs.effects")
 
 --- @section Constants
 
@@ -125,24 +124,13 @@ function Statuses:on_tick(dt)
     current.hygiene = current.hygiene - (0.01 * dt)
     current.fatigue = current.fatigue + (0.02 * dt)
 
-    --- Active effect modifiers + expiration
+    --- Active effect expiration (modifiers are now handled externally)
     local now = os.time()
     if current.effects then
         for effect_name, effect in pairs(current.effects) do
             if effect.expires_at and now >= effect.expires_at then
                 current.effects[effect_name] = nil
                 self.player:emit("effect_expired", effect_name)
-            else
-                local cfg = _cfg_effects[effect_name]
-                local modifiers = cfg and cfg.modifiers
-                if modifiers then
-                    local stacks = effect.stacks or 1
-                    for key, amount in pairs(modifiers) do
-                        if STATUS_RANGES[key] then
-                            current[key] = clamp_status(key, current[key] + (amount * stacks * dt))
-                        end
-                    end
-                end
             end
         end
     end
@@ -317,24 +305,35 @@ end
 --- @section Effects
 
 function Statuses:add_effect(effect_name, opts)
+    if type(effect_name) ~= "string" or effect_name == "" then 
+        return false 
+    end
+
     opts = opts or {}
+    if type(opts) ~= "table" then 
+        return false 
+    end
+
     local current = self:get_all()
     current.effects = current.effects or {}
 
     local now = os.time()
-    local duration = opts.duration or -1
+    local duration = tonumber(opts.duration) or -1
     local existing = current.effects[effect_name]
 
     if existing then
-        existing.stacks = math.min((existing.stacks or 1) + (opts.stacks or 1), opts.max_stacks or 99)
+        local add_stacks = tonumber(opts.stacks) or 1
+        local max_stacks = tonumber(opts.max_stacks) or 99
+        
+        existing.stacks = math.min((existing.stacks or 1) + add_stacks, max_stacks)
         existing.duration = duration
         existing.expires_at = duration > 0 and (now + duration) or nil
     else
         current.effects[effect_name] = {
-            effect_type = opts.effect_type or "status",
+            effect_type = type(opts.effect_type) == "string" and opts.effect_type or "status",
             effect_name = effect_name,
             duration = duration,
-            stacks = opts.stacks or 1,
+            stacks = tonumber(opts.stacks) or 1,
             applied_at = now,
             expires_at = duration > 0 and (now + duration) or nil
         }
@@ -343,22 +342,6 @@ function Statuses:add_effect(effect_name, opts)
     self.player:set_data("statuses", current, true)
     self.player:emit("effect_added", effect_name, current.effects[effect_name])
     return true
-end
-
-function Statuses:apply_effect(effect_name, opts)
-    local cfg = _cfg_effects[effect_name]
-    if not cfg or effect_name == "types" then
-        log("warn", ("Unknown effect '%s' - not present in effects config"):format(tostring(effect_name)))
-        return false
-    end
-
-    opts = opts or {}
-    return self:add_effect(effect_name, {
-        effect_type = cfg.type,
-        duration = opts.duration or cfg.duration,
-        stacks = opts.stacks or 1,
-        max_stacks = opts.max_stacks
-    })
 end
 
 function Statuses:remove_effect(effect_name)

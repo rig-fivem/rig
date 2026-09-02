@@ -315,22 +315,6 @@ RegisterNetEvent("rig:client:close_ui", function()
     m.close_ui()
 end)
 
-RegisterNetEvent("rig:client:show_status_hud", function()
-    m.show_status_hud()
-end)
-
-RegisterNetEvent("rig:client:hide_status_hud", function()
-    m.hide_status_hud()
-end)
-
-RegisterNetEvent("rig:client:update_status_hud", function(data)
-    m.update_status_hud(data)
-end)
-
-RegisterNetEvent("rig:client:destroy_status_hud", function()
-    m.destroy_status_hud()
-end)
-
 --- @section Exports
 
 exports("notify", m.notify)
@@ -350,10 +334,5 @@ exports("cancel_progress_circle", m.cancel_progress_circle)
 
 exports("build_ui", m.build_ui)
 exports("close_ui", m.close_ui)
-
-exports("show_status_hud", m.show_status_hud)
-exports("hide_status_hud", m.hide_status_hud)
-exports("update_status_hud", m.update_status_hud)
-exports("destroy_status_hud", m.destroy_status_hud)
 
 return m

@@ -13,7 +13,6 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 import { Modal } from "./modal/js/modal.js";
 import { Notify } from "./notify/js/notify.js";
 import { UIBuilder } from "./framework/js/main.js";
-import { StatusHUD } from "./hud/js/status.js";
 
 // Initialisation
 
@@ -23,8 +22,6 @@ const NOTIFY = new Notify({
 });
 
 const HANDLERS = {}
-
-let status_hud = null;
 
 // Handler Functions
 
@@ -83,36 +80,6 @@ HANDLERS.close_ui = () => {
         window.ui_instance = null;
     }
 };
-
-/** HUD */
-
-HANDLERS.show_status_hud = () => {
-    if (!status_hud) status_hud = new StatusHUD()
-    status_hud.show()
-}
-
-HANDLERS.hide_status_hud = () => {
-    if (status_hud) status_hud.hide()
-}
-
-HANDLERS.update_status_hud = (data) => {
-    if (!data || !data.payload) return
-    if (!status_hud) status_hud = new StatusHUD()
-    status_hud.update(data.payload)
-}
-
-HANDLERS.set_status_headshot = (data) => {
-    if (!data || !data.payload) return
-    if (!status_hud) status_hud = new StatusHUD()
-    status_hud.set_headshot(data.payload.src)
-}
-
-HANDLERS.destroy_status_hud = () => {
-    if (status_hud) {
-        status_hud.destroy()
-        status_hud = null
-    }
-}
 
 /**
  * Global message listener for all NUI messages.
