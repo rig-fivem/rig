@@ -1,5 +1,15 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @class User
---- @file src/server/user/class.lua
+--- @file src/server/users/class.lua
 --- @description Main user class, handles everything to do with user accounts.
 
 --- @section Imports

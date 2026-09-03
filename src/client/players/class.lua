@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @class Player
 --- @file src/client/players/class.lua
 --- @description Handles client player class nothing special just a data store.

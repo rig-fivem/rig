@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @class UserRegistry
 --- @file src/server/user/registry.lua
 --- @description Manages account connections and the User class layer.
@@ -58,13 +68,13 @@ function UserRegistry:request_connection(source, name, deferrals)
     end
 
     deferrals.defer()
-    update_deferral(deferrals, "src.server.users.registry.checking")
+    update_deferral(deferrals, "server.users.registry.checking")
 
     local result = self:exists(ids.license)
     local user_data = result and result[1]
 
     if not user_data then
-        update_deferral(deferrals, "src.server.users.registry.creating")
+        update_deferral(deferrals, "server.users.registry.creating")
         local uid = _db.generate_unique_id(core.settings.users.unique_id_chars, "users", "unique_id", nil)
         local username = core.settings.users.username_prefix .. "_" .. uid
         self:persist(username, name, uid, ids.license, ids.discord, GetPlayerTokens(source), ids.ip)
@@ -72,7 +82,7 @@ function UserRegistry:request_connection(source, name, deferrals)
         log("success", ("Created new user profile UID %s for %s"):format(uid, name))
     end
 
-    update_deferral(deferrals, "src.server.users.registry.checking_bans")
+    update_deferral(deferrals, "server.users.registry.checking_bans")
     local ban_query = "SELECT id, reason, expires_at FROM user_bans WHERE unique_id = ? AND expired = 0 ORDER BY created DESC LIMIT 1"
     local ban = exports.oxmysql:query_async(ban_query, { user_data.unique_id })
     local active_ban = ban and ban[1]

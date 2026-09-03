@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @module cooldowns
 --- @file src/server/modules/cooldowns.lua
 --- @description Cooldown tracking and enforcement for player, global, and resource-based actions.

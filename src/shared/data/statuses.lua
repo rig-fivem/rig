@@ -1,10 +1,10 @@
 --[[
 ----------------------------------------
-RIG Framework (built for rig)
+RIG Framework (built for FiveM)
 
 Author: Case (https://caseirl.dev)
-Repo: https://github.com/rig-fivem/rig_avatars-cfx
-License: https://github.com/rig-fivem/rig_avatars-cfx/blob/main/LICENSE
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 ----------------------------------------
 ]]
 
@@ -22,7 +22,7 @@ return {
         thirst = 100.0,
         hygiene = 100.0,
         fatigue = 0.0,
-        sanity = 100.0,
+        stress = 0.0,
         temperature = 37.0,
         bleeding = 0.0,
         radiation = 0.0,

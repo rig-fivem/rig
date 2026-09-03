@@ -1,5 +1,15 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @class Inventory
---- @file extensions/server/inventories/classes/player.lua
+--- @file src/server/players/extensions/inventory.lua
 --- @description Player inventory extension managing item storage.
 
 --- @section Initialisation

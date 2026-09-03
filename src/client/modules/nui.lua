@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @module nui
 --- @file src/client/modules/nui.lua
 --- @description Handles core NUI stuff; notifications, modals, ui framework etc.

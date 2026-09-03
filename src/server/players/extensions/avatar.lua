@@ -1,5 +1,15 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @class Avatar
---- @file extensions/server/avatars/classes/player.lua
+--- @file src/server/players/extensions/avatar.lua
 --- @description Player avatar extension class managing ped appearance and customization
 
 --- @section Initialisation

@@ -50,6 +50,45 @@ CREATE TABLE IF NOT EXISTS `user_warnings` (
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Group Tables
+-- Groups
+CREATE TABLE IF NOT EXISTS `groups` (
+    `name` VARCHAR(50) NOT NULL,
+    `label` VARCHAR(100) NOT NULL,
+    `type` VARCHAR(32) NOT NULL DEFAULT 'group',
+    `parent_name` VARCHAR(50) DEFAULT NULL,
+    `metadata` JSON NOT NULL,
+    PRIMARY KEY (`name`),
+    KEY `type_idx` (`type`),
+    FOREIGN KEY (`parent_name`) REFERENCES `groups` (`name`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Roles
+CREATE TABLE IF NOT EXISTS `group_roles` (
+    `group_name` VARCHAR(50) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    `label` VARCHAR(100) NOT NULL,
+    `grade` INT NOT NULL DEFAULT 0,
+    `permissions` JSON NOT NULL,
+    PRIMARY KEY (`group_name`, `name`),
+    KEY `grade_idx` (`grade`),
+    FOREIGN KEY (`group_name`) REFERENCES `groups` (`name`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Members
+CREATE TABLE IF NOT EXISTS `group_members` (
+    `group_name` VARCHAR(50) NOT NULL,
+    `unique_id` VARCHAR(255) NOT NULL,
+    `role_name` VARCHAR(50) NOT NULL,
+    `is_primary` TINYINT(1) NOT NULL DEFAULT 0,
+    `metadata` JSON NOT NULL,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`group_name`, `unique_id`),
+    FOREIGN KEY (`group_name`) REFERENCES `groups` (`name`) ON DELETE CASCADE,
+    FOREIGN KEY (`group_name`, `role_name`) REFERENCES `group_roles` (`group_name`, `name`) ON DELETE CASCADE,
+    FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Player Tables
 -- Avatars
 CREATE TABLE IF NOT EXISTS `avatars` (
@@ -91,12 +130,12 @@ CREATE TABLE IF NOT EXISTS `statuses` (
     `thirst` FLOAT NOT NULL DEFAULT 100.0,
     `hygiene` FLOAT NOT NULL DEFAULT 100.0,
     `fatigue` FLOAT NOT NULL DEFAULT 0.0,
-    `sanity` FLOAT NOT NULL DEFAULT 100.0,
-    `temperature` FLOAT NOT NULL DEFAULT 37.0,
+    `stress` FLOAT NOT NULL DEFAULT 0.0,
     `bleeding` FLOAT NOT NULL DEFAULT 0.0,
     `radiation` FLOAT NOT NULL DEFAULT 0.0,
     `infection` FLOAT NOT NULL DEFAULT 0.0,
     `poison` FLOAT NOT NULL DEFAULT 0.0,
+    `temperature` FLOAT NOT NULL DEFAULT 37.0,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`unique_id`),
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
@@ -138,6 +177,8 @@ CREATE TABLE IF NOT EXISTS `effects` (
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Inventory Tables
+-- Inventories
 CREATE TABLE IF NOT EXISTS `inventories` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `identifier` VARCHAR(255) NOT NULL,
@@ -153,3 +194,19 @@ CREATE TABLE IF NOT EXISTS `inventories` (
     KEY `owner_idx` (`owner`),
     KEY `inventory_type_inventory_subtype_idx` (`inventory_type`, `inventory_subtype`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Delimiter; removes player inventories when `user` account is removed.
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_users_after_delete;
+
+CREATE TRIGGER trg_users_after_delete
+AFTER DELETE ON users
+FOR EACH ROW
+BEGIN
+    DELETE FROM inventories
+    WHERE owner = OLD.unique_id
+      AND inventory_type = 'player';
+END$$
+
+DELIMITER ;

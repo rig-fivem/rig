@@ -1,4 +1,14 @@
---- @file src/init.lua
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
+--- @file init.lua
 --- @description Main initialisation file.
 --- Handles namepace, settings and some global functions.
 

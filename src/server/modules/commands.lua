@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @module commands
 --- @file src/server/modules/commands.lua
 --- @description ACE permission-based command registration with chat suggestion support.

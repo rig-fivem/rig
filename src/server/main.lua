@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @file src/server/main.lua
 --- @description Server side initialisation file.
 
@@ -5,6 +15,8 @@
 
 local UserRegistry = require("src.server.users.registry")
 local PlayerRegistry = require("src.server.players.registry")
+local GroupRegistry = require("src.server.groups.registry")
+
 local _cmds = require("src.server.modules.commands")
 local _utils = require("src.server.modules.utils")
 
@@ -12,6 +24,7 @@ local _utils = require("src.server.modules.utils")
 
 core.users = UserRegistry.new()
 core.players = PlayerRegistry.new()
+core.groups = GroupRegistry.new()
 
 --- @section FiveM Events
 

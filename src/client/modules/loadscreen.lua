@@ -1,6 +1,16 @@
---- @module callbacks
---- @file src/client/modules/callbacks.lua
---- @description Simple standalone callback registration system.
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
+--- @module loadscreen
+--- @file src/client/modules/loadscreen.lua
+--- @description Handles shutting down loadscreen / triggering request.
 
 --- @section Guard
 
@@ -23,6 +33,8 @@ function m.shutdown_loadscreen()
     ShutdownLoadingScreenNui()
     Wait(350)
 
+    -- @todo replace with a config export or something?
+    -- so people dont have to modify core if replacing avatar system
     TriggerServerEvent("rig:server:request_avatar")
 end
 

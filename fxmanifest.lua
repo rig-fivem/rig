@@ -1,6 +1,6 @@
 --[[
 ----------------------------------------
-RIG Framework (built for CFX Platforms)
+RIG Framework (built for FiveM)
 
 Author: Case (https://caseirl.dev)
 Repo: https://github.com/rig-fivem/rig

@@ -1,3 +1,13 @@
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
 --- @class Statuses
 --- @file src/server/players/extensions/statuses.lua
 --- @description Player status management handling vitals, targeted body injuries, and active effects.
@@ -18,7 +28,7 @@ local STATUS_RANGES = {
     thirst = { min = 0.0, max = 100.0 },
     hygiene = { min = 0.0, max = 100.0 },
     fatigue = { min = 0.0, max = 100.0 },
-    sanity = { min = 0.0, max = 100.0 },
+    stress = { min = 0.0, max = 100.0 },
     temperature = { min = 20.0, max = 45.0 },
     bleeding = { min = 0.0, max = 100.0 },
     radiation = { min = 0.0, max = 100.0 },
@@ -124,7 +134,6 @@ function Statuses:on_tick(dt)
     current.hygiene = current.hygiene - (0.01 * dt)
     current.fatigue = current.fatigue + (0.02 * dt)
 
-    --- Active effect expiration (modifiers are now handled externally)
     local now = os.time()
     if current.effects then
         for effect_name, effect in pairs(current.effects) do
@@ -187,7 +196,7 @@ function Statuses:on_save()
         query = [[
             UPDATE statuses SET
                 health = ?, armour = ?, hunger = ?, thirst = ?, hygiene = ?,
-                fatigue = ?, sanity = ?, temperature = ?, bleeding = ?,
+                fatigue = ?, stress = ?, temperature = ?, bleeding = ?,
                 radiation = ?, infection = ?, poison = ?
             WHERE unique_id = ?
         ]],
@@ -195,7 +204,7 @@ function Statuses:on_save()
             clamp_status("health", data.health), clamp_status("armour", data.armour),
             clamp_status("hunger", data.hunger), clamp_status("thirst", data.thirst),
             clamp_status("hygiene", data.hygiene), clamp_status("fatigue", data.fatigue),
-            clamp_status("sanity", data.sanity), clamp_status("temperature", data.temperature),
+            clamp_status("stress", data.stress), clamp_status("temperature", data.temperature),
             clamp_status("bleeding", data.bleeding), clamp_status("radiation", data.radiation),
             clamp_status("infection", data.infection), clamp_status("poison", data.poison),
             uid

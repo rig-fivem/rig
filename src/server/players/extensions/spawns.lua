@@ -1,18 +1,28 @@
---- @class Spawn
---- @file src/server/players/extensions/spawn.lua
+--[[
+----------------------------------------
+RIG Framework (built for FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+]]
+
+--- @class Spawns
+--- @file src/server/players/extensions/spawns.lua
 --- @description Player spawn extension for managing spawn locations.
 
 --- @section Initialisation
 
-local Spawn = {}
-Spawn.__index = Spawn
+local Spawns = {}
+Spawns.__index = Spawns
 
 --- @section Factory
 
-function Spawn.new(player)
+function Spawns.new(player)
     return setmetatable({
         player = player
-    }, Spawn)
+    }, Spawns)
 end
 
 --- @section Internal Helpers
@@ -33,7 +43,7 @@ end
 
 --- @section Lifecycle Hooks
 
-function Spawn:on_load()
+function Spawns:on_load()
     local uid = self.player.unique_id
 
     local result = exports.oxmysql:query_async("SELECT * FROM spawns WHERE unique_id = ?", { uid })
@@ -56,7 +66,7 @@ function Spawn:on_load()
     self.player:add_data("spawns", spawns, true)
 end
 
-function Spawn:on_save()
+function Spawns:on_save()
     if not self.player:is_playing() then return nil end
 
     self:save_last_location()
@@ -98,18 +108,18 @@ end
 
 --- @section Getters
 
-function Spawn:get_spawns()
+function Spawns:get_spawns()
     return self.player:get_data("spawns")
 end
 
-function Spawn:get_spawn(spawn_id)
+function Spawns:get_spawn(spawn_id)
     local spawns = self.player:get_data("spawns")
     return spawns and spawns[spawn_id]
 end
 
 --- @section Setters
 
-function Spawn:set_spawns(updates)
+function Spawns:set_spawns(updates)
     if not updates or type(updates) ~= "table" then return false end
 
     local validated = {}
@@ -122,7 +132,7 @@ function Spawn:set_spawns(updates)
     return self.player:set_data("spawns", validated, true)
 end
 
-function Spawn:set_spawn(spawn_id, spawn_data)
+function Spawns:set_spawn(spawn_id, spawn_data)
     local v = validate_spawn(spawn_data)
     if not v then return false end
 
@@ -131,7 +141,7 @@ end
 
 --- @section Actions
 
-function Spawn:spawn_player(coords)
+function Spawns:spawn_player(coords)
     local player = self.player
     if player:is_playing() then return false end
 
@@ -154,20 +164,20 @@ end
 
 --- @section Clean Up
 
-function Spawn:clear_spawns()
+function Spawns:clear_spawns()
     local spawns = self.player:get_data("spawns") or {}
     local last_location = spawns.last_location
     return self.player:set_data("spawns", { last_location = last_location }, true)
 end
 
-function Spawn:clear_spawn(spawn_id)
+function Spawns:clear_spawn(spawn_id)
     if spawn_id == "last_location" then return false end
     return self.player:set_data("spawns", { [spawn_id] = nil }, true)
 end
 
 --- @section Save Helpers
 
-function Spawn:save_last_location()
+function Spawns:save_last_location()
     local player = self.player
     if not player or not player.source then return false end
 
@@ -187,4 +197,4 @@ function Spawn:save_last_location()
     })
 end
 
-return Spawn
+return Spawns
