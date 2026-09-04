@@ -12,6 +12,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/server/players/extensions/skills.lua
 --- @description Player skills extension managing per-skill xp storage.
 
+--- @section Imports
+
+local _db = require("src.server.modules.database")
+
 --- @section Initialisation
 
 local Skills = {}
@@ -31,7 +35,7 @@ end
 function Skills:on_load()
     local unique_id = self.player.unique_id
 
-    local rows = exports.oxmysql:query_async("SELECT * FROM skills WHERE unique_id = ?", { unique_id })
+    local rows = _db.query("SELECT * FROM player_skills WHERE unique_id = ?", { unique_id })
 
     local skills = {}
 
@@ -59,7 +63,7 @@ function Skills:on_save()
     for skill_id, skill in pairs(data) do
         queries[#queries + 1] = {
             query = [[
-                INSERT INTO skills (unique_id, skill_id, skill_xp, metadata)
+                INSERT INTO player_skills (unique_id, skill_id, skill_xp, metadata)
                 VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     skill_xp = VALUES(skill_xp),

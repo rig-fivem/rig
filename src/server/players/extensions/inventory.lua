@@ -12,6 +12,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/server/players/extensions/inventory.lua
 --- @description Player inventory extension managing item storage.
 
+--- @section Imports
+
+local _db = require("src.server.modules.database")
+
 --- @section Initialisation
 
 local Inventory = {}
@@ -32,12 +36,12 @@ function Inventory:on_load()
     local unique_id = self.player.unique_id
     local identifier = "player_" .. unique_id
 
-    local row = exports.oxmysql:single_async("SELECT * FROM inventories WHERE identifier = ?", { identifier })
+    local row = _db.single("SELECT * FROM inventories WHERE identifier = ?", { identifier })
 
     if not row then
         log("info", ("[Inventory] No inventory record found for identifier: %s. Creating default..."):format(identifier))
 
-        exports.oxmysql:insert_async([[
+        _db.insert([[
             INSERT INTO inventories (identifier, owner, inventory_type, items, metadata)
             VALUES (?, ?, 'player', JSON_OBJECT(), JSON_OBJECT())
         ]], { identifier, unique_id })

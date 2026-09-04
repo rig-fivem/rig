@@ -15,6 +15,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @section Imports
 
 local Player = require("src.server.players.class")
+local _db = require("src.server.modules.database")
 
 --- @section Constants
 

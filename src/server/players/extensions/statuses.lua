@@ -15,6 +15,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @section Imports
 
 local _statuses_data = require("src.shared.data.statuses")
+local _db = require("src.server.modules.database")
 
 --- @section Constants
 
@@ -69,12 +70,12 @@ function Statuses:on_load()
     local uid = self.player.unique_id
 
     --- Statuses
-    local status_res = exports.oxmysql:query_async("SELECT * FROM statuses WHERE unique_id = ?", { uid })
+    local status_res = _db.query("SELECT * FROM player_statuses WHERE unique_id = ?", { uid })
     local vitals = status_res and status_res[1]
 
     if not vitals then
-        exports.oxmysql:insert_async([[
-            INSERT INTO statuses (unique_id) VALUES (?)
+        _db.insert([[
+            INSERT INTO player_statuses (unique_id) VALUES (?)
         ]], { uid })
 
         vitals = {}
@@ -84,12 +85,12 @@ function Statuses:on_load()
     end
 
     --- Injuries
-    local injury_res = exports.oxmysql:query_async("SELECT * FROM injuries WHERE unique_id = ?", { uid })
+    local injury_res = _db.query("SELECT * FROM player_injuries WHERE unique_id = ?", { uid })
     local injuries = injury_res and injury_res[1]
 
     if not injuries then
-        exports.oxmysql:insert_async([[
-            INSERT INTO injuries (unique_id) VALUES (?)
+        _db.insert([[
+            INSERT INTO player_injuries (unique_id) VALUES (?)
         ]], { uid })
 
         injuries = {}
@@ -99,7 +100,7 @@ function Statuses:on_load()
     end
 
     --- Effects
-    local effects_res = exports.oxmysql:query_async("SELECT * FROM effects WHERE unique_id = ?", { uid })
+    local effects_res = _db.query("SELECT * FROM player_effects WHERE unique_id = ?", { uid })
     local effects = {}
 
     if effects_res and #effects_res > 0 then
@@ -194,7 +195,7 @@ function Statuses:on_save()
     --- Statuses
     queries[#queries + 1] = {
         query = [[
-            UPDATE statuses SET
+            UPDATE player_statuses SET
                 health = ?, armour = ?, hunger = ?, thirst = ?, hygiene = ?,
                 fatigue = ?, stress = ?, temperature = ?, bleeding = ?,
                 radiation = ?, infection = ?, poison = ?
@@ -215,7 +216,7 @@ function Statuses:on_save()
     local inj = data.injuries or {}
     queries[#queries + 1] = {
         query = [[
-            UPDATE injuries SET
+            UPDATE player_injuries SET
                 head = ?, upper_torso = ?, lower_torso = ?, forearm_right = ?, forearm_left = ?,
                 hand_right = ?, hand_left = ?, thigh_right = ?, thigh_left = ?, calf_right = ?,
                 calf_left = ?, foot_right = ?, foot_left = ?
@@ -232,7 +233,7 @@ function Statuses:on_save()
 
     --- Effects
     queries[#queries + 1] = {
-        query = "DELETE FROM effects WHERE unique_id = ?",
+        query = "DELETE FROM player_effects WHERE unique_id = ?",
         values = { uid }
     }
 
@@ -240,7 +241,7 @@ function Statuses:on_save()
         for effect_name, effect in pairs(data.effects) do
             queries[#queries + 1] = {
                 query = [[
-                    INSERT INTO effects (unique_id, effect_id, effect_type, effect_name, duration, stacks, applied_at, expires_at)
+                    INSERT INTO player_effects (unique_id, effect_id, effect_type, effect_name, duration, stacks, applied_at, expires_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ]],
                 values = {

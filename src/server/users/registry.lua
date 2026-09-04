@@ -46,14 +46,14 @@ end
 function UserRegistry:exists(license)
     log("debug", ("Checking user account existence for license: %s"):format(tostring(license)))
     local query = "SELECT * FROM users WHERE license = ? LIMIT 1"
-    return exports.oxmysql:query_async(query, { license })
+    return _db.query(query, { license })
 end
 
 function UserRegistry:persist(username, name, unique_id, license, discord, tokens, ip)
     log("info", ("Persisting new user record UID %s (%s) to database"):format(tostring(unique_id), tostring(username)))
     local query = "INSERT INTO users (unique_id, username, name, license, discord, tokens, ip) VALUES (?, ?, ?, ?, ?, ?, ?)"
     local params = { unique_id, username, name, license, discord, json.encode(tokens), ip }
-    return exports.oxmysql:insert_async(query, params)
+    return _db.insert(query, params)
 end
 
 --- @section Connections
@@ -84,13 +84,13 @@ function UserRegistry:request_connection(source, name, deferrals)
 
     update_deferral(deferrals, "server.users.registry.checking_bans")
     local ban_query = "SELECT id, reason, expires_at FROM user_bans WHERE unique_id = ? AND expired = 0 ORDER BY created DESC LIMIT 1"
-    local ban = exports.oxmysql:query_async(ban_query, { user_data.unique_id })
+    local ban = _db.query(ban_query, { user_data.unique_id })
     local active_ban = ban and ban[1]
 
     if active_ban then
         if active_ban.expires_at and os.time() > (active_ban.expires_at / 1000) then
-            exports.oxmysql:query_async("UPDATE user_bans SET expired = 1 WHERE id = ?", { active_ban.id })
-            exports.oxmysql:query_async("UPDATE users SET banned = 0 WHERE unique_id = ?", { user_data.unique_id })
+            _db.query("UPDATE user_bans SET expired = 1 WHERE id = ?", { active_ban.id })
+            _db.query("UPDATE users SET banned = 0 WHERE unique_id = ?", { user_data.unique_id })
             log("info", ("Expired ban cleaned up for UID %s"):format(user_data.unique_id))
         else
             local time_str = active_ban.expires_at and os.date("%Y-%m-%d %H:%M:%S", active_ban.expires_at / 1000) or locale("server.users.registry.ban_permanent")

@@ -12,6 +12,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/server/players/extensions/spawns.lua
 --- @description Player spawn extension for managing spawn locations.
 
+--- @section Imports
+
+local _db = require("src.server.modules.database")
+
 --- @section Initialisation
 
 local Spawns = {}
@@ -46,7 +50,7 @@ end
 function Spawns:on_load()
     local uid = self.player.unique_id
 
-    local result = exports.oxmysql:query_async("SELECT * FROM spawns WHERE unique_id = ?", { uid })
+    local result = _db.query("SELECT * FROM player_spawns WHERE unique_id = ?", { uid })
     local spawns = {}
 
     if result and #result > 0 then
@@ -79,7 +83,7 @@ function Spawns:on_save()
         if spawn_data then
             queries[#queries + 1] = {
                 query = [[
-                    INSERT INTO spawns (unique_id, spawn_id, spawn_type, label, x, y, z, w)
+                    INSERT INTO player_spawns (unique_id, spawn_id, spawn_type, label, x, y, z, w)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE
                         spawn_type = VALUES(spawn_type),

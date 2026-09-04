@@ -12,6 +12,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/server/players/class.lua
 --- @description Main player class object, extended by /extensions/ classes.
 
+--- @section Imports
+
+local _db = require("src.server.modules.database")
+
 --- @section Initialisation
 
 local Player = {}
@@ -135,7 +139,7 @@ function Player:save()
 
     self:emit("before_save", queries)
     if #queries > 0 then
-        exports.oxmysql:transaction_async(queries)
+        _db.transaction(queries)
         log("debug", ("Executed %d save queries for source %d"):format(#queries, self.source))
     end
     self:emit("saved")

@@ -50,48 +50,9 @@ CREATE TABLE IF NOT EXISTS `user_warnings` (
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Group Tables
--- Groups
-CREATE TABLE IF NOT EXISTS `groups` (
-    `name` VARCHAR(50) NOT NULL,
-    `label` VARCHAR(100) NOT NULL,
-    `type` VARCHAR(32) NOT NULL DEFAULT 'group',
-    `parent_name` VARCHAR(50) DEFAULT NULL,
-    `metadata` JSON NOT NULL,
-    PRIMARY KEY (`name`),
-    KEY `type_idx` (`type`),
-    FOREIGN KEY (`parent_name`) REFERENCES `groups` (`name`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Roles
-CREATE TABLE IF NOT EXISTS `group_roles` (
-    `group_name` VARCHAR(50) NOT NULL,
-    `name` VARCHAR(50) NOT NULL,
-    `label` VARCHAR(100) NOT NULL,
-    `grade` INT NOT NULL DEFAULT 0,
-    `permissions` JSON NOT NULL,
-    PRIMARY KEY (`group_name`, `name`),
-    KEY `grade_idx` (`grade`),
-    FOREIGN KEY (`group_name`) REFERENCES `groups` (`name`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Members
-CREATE TABLE IF NOT EXISTS `group_members` (
-    `group_name` VARCHAR(50) NOT NULL,
-    `unique_id` VARCHAR(255) NOT NULL,
-    `role_name` VARCHAR(50) NOT NULL,
-    `is_primary` TINYINT(1) NOT NULL DEFAULT 0,
-    `metadata` JSON NOT NULL,
-    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`group_name`, `unique_id`),
-    FOREIGN KEY (`group_name`) REFERENCES `groups` (`name`) ON DELETE CASCADE,
-    FOREIGN KEY (`group_name`, `role_name`) REFERENCES `group_roles` (`group_name`, `name`) ON DELETE CASCADE,
-    FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Player Tables
 -- Avatars
-CREATE TABLE IF NOT EXISTS `avatars` (
+CREATE TABLE IF NOT EXISTS `player_avatars` (
     `unique_id` VARCHAR(255) NOT NULL,
     `ped` VARCHAR(255) NOT NULL DEFAULT "mp_m_freemode_01",
     `genetics` JSON NOT NULL DEFAULT (JSON_OBJECT()),
@@ -105,8 +66,21 @@ CREATE TABLE IF NOT EXISTS `avatars` (
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Groups
+CREATE TABLE IF NOT EXISTS `player_groups` (
+    `unique_id` VARCHAR(255) NOT NULL,
+    `group_name` VARCHAR(50) NOT NULL,
+    `role_name` VARCHAR(50) NOT NULL,
+    `is_primary` TINYINT(1) NOT NULL DEFAULT 0,
+    `metadata` JSON NOT NULL DEFAULT (JSON_OBJECT()),
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`unique_id`, `group_name`),
+    KEY `group_name_idx` (`group_name`),
+    FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Spawns
-CREATE TABLE IF NOT EXISTS `spawns` (
+CREATE TABLE IF NOT EXISTS `player_spawns` (
     `unique_id` VARCHAR(255) NOT NULL,
     `spawn_id` VARCHAR(50) NOT NULL DEFAULT 'last_location',
     `spawn_type` VARCHAR(20) NOT NULL DEFAULT 'last_location',
@@ -122,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `spawns` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Statuses
-CREATE TABLE IF NOT EXISTS `statuses` (
+CREATE TABLE IF NOT EXISTS `player_statuses` (
     `unique_id` VARCHAR(255) NOT NULL,
     `health` FLOAT NOT NULL DEFAULT 200.0,
     `armour` FLOAT NOT NULL DEFAULT 0.0,
@@ -142,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `statuses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Statuses: Injuries
-CREATE TABLE IF NOT EXISTS `injuries` (
+CREATE TABLE IF NOT EXISTS `player_injuries` (
     `unique_id` VARCHAR(255) NOT NULL,
     `head` FLOAT NOT NULL DEFAULT 0.0,
     `upper_torso` FLOAT NOT NULL DEFAULT 0.0,
@@ -162,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `injuries` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Statuses: Effects
-CREATE TABLE IF NOT EXISTS `effects` (
+CREATE TABLE IF NOT EXISTS `player_effects` (
     `unique_id` VARCHAR(255) NOT NULL,
     `effect_id` VARCHAR(255) NOT NULL,
     `effect_type` VARCHAR(20) NOT NULL DEFAULT 'status',
@@ -178,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `effects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Skills
-CREATE TABLE IF NOT EXISTS `skills` (
+CREATE TABLE IF NOT EXISTS `player_skills` (
     `unique_id` VARCHAR(255) NOT NULL,
     `skill_id` VARCHAR(50) NOT NULL,
     `skill_xp` INT NOT NULL DEFAULT 0,

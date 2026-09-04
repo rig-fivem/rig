@@ -12,6 +12,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/server/players/extensions/avatar.lua
 --- @description Player avatar extension class managing ped appearance and customization
 
+--- @section Imports
+
+local _db = require("src.server.modules.database")
+
 --- @section Initialisation
 
 local Avatar = {}
@@ -31,13 +35,13 @@ end
 function Avatar:on_load()
     local unique_id = self.player.unique_id
 
-    local row = exports.oxmysql:single_async("SELECT * FROM avatars WHERE unique_id = ?", { unique_id })
+    local row = _db.single("SELECT * FROM player_avatars WHERE unique_id = ?", { unique_id })
 
     if not row then
         log("info", ("[Avatar] No avatar record found for unique_id: %s. Creating default..."):format(unique_id))
 
-        exports.oxmysql:insert_async([[
-            INSERT INTO avatars (unique_id, ped, genetics, barber, clothing, tattoos, has_customised)
+        _db.insert([[
+            INSERT INTO player_avatars (unique_id, ped, genetics, barber, clothing, tattoos, has_customised)
             VALUES (?, 'mp_m_freemode_01', '{}', '{}', '{}', '{}', 0)
         ]], { unique_id })
 
@@ -77,7 +81,7 @@ function Avatar:on_save()
     return {
         {
             query = [[
-                UPDATE avatars 
+                UPDATE player_avatars 
                 SET ped = ?, genetics = ?, barber = ?, clothing = ?, tattoos = ?, has_customised = ? 
                 WHERE unique_id = ?
             ]],
