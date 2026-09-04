@@ -126,6 +126,9 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .body_card_image img {
@@ -170,4 +173,44 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 .body_card_image.rarity_legendary {
     background: linear-gradient(to top, var(--rarity_legendary) 0%, transparent 55%), var(--background_panel);
+}
+
+.body_card_icon {
+    background: var(--background_panel);
+}
+
+.body_card_icon_fa {
+    font-size: 2rem;
+    color: var(--text_primary);
+}
+
+.body_card_icon_svg svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--text_primary);
+}
+
+.body_card_icon_img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+}
+
+.body_card.row .body_card_icon_fa {
+    font-size: 1.5rem;
+}
+
+.body_card_progress {
+    margin-top: 0.5vh;
+    width: 100%;
+    height: 0.4vh;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0.2vh;
+    overflow: hidden;
+}
+
+.body_card_progress_fill {
+    height: 100%;
+    background: var(--text_primary);
+    transition: width 0.2s ease;
 }

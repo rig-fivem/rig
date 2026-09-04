@@ -44,6 +44,8 @@ core.settings = {
     },
 
     gameplay = {
+        routing_bucket_population_enabled = GetConvarBool("rig:gameplay:routing_bucket_population_enabled", false),
+        routing_bucket_lockdown_mode = GetConvar("rig:gameplay:routing_bucket_lockdown_mode", "strict"),
         player_tick_rate = GetConvarInt("rig:gameplay:player_tick_rate", 5000),
         player_save_interval = GetConvarInt("rig:gameplay:player_save_interval", 5),
         disable_dispatch = GetConvarBool("rig:gameplay:disable_dispatch", true),

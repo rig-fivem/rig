@@ -177,6 +177,20 @@ CREATE TABLE IF NOT EXISTS `effects` (
     FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Skills
+CREATE TABLE IF NOT EXISTS `skills` (
+    `unique_id` VARCHAR(255) NOT NULL,
+    `skill_id` VARCHAR(50) NOT NULL,
+    `skill_xp` INT NOT NULL DEFAULT 0,
+    `metadata` JSON NOT NULL DEFAULT (JSON_OBJECT()),
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`unique_id`, `skill_id`),
+    KEY `unique_id_idx` (`unique_id`),
+    KEY `skill_id_idx` (`skill_id`),
+    FOREIGN KEY (`unique_id`) REFERENCES `users` (`unique_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Inventory Tables
 -- Inventories
 CREATE TABLE IF NOT EXISTS `inventories` (

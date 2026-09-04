@@ -30,6 +30,34 @@ export class Cards {
         return `<div class="cards_container ${this.scroll_x} ${this.scroll_y}" ${style}>${content}</div>`.trim();
     }
 
+    create_media(card) {
+        const source = (card.image || card.icon || "").trim();
+        if (!source) return "";
+
+        const rarity = card.on_hover?.rarity?.toLowerCase() || "common";
+        const rarity_class = rarity && rarity !== "common" ? `rarity_${rarity}` : "";
+
+        let inner;
+        
+        if (source.startsWith("<svg")) {
+            inner = `<span class="body_card_icon_svg">${source}</span>`;
+        } else if (source.startsWith("http://") || source.startsWith("https://")) {
+            inner = `<img class="body_card_icon_img" src="${source}" alt="" />`;
+        } else if (/\.(svg|png|jpg|jpeg|webp)(\?.*)?$/i.test(source)) {
+            inner = `<img class="body_card_icon_img" src="${resolve_image_path(source, "/ui/assets/images/")}" alt="" />`;
+        } else {
+            inner = `<i class="${source} body_card_icon_fa"></i>`;
+        }
+
+        return `<div class="body_card_image ${rarity_class}"><div class="body_card_image_wrapper">${inner}</div></div>`;
+    }
+
+    create_progress(card) {
+        if (typeof card.progress !== "number") return "";
+        const pct = Math.max(0, Math.min(100, card.progress));
+        return `<div class="body_card_progress"><div class="body_card_progress_fill" style="width: ${pct}%;"></div></div>`;
+    }
+
     create_card(card, index) {
         const title = card.title ? `<h4>${card.title}</h4>` : "";
         const desc = card.description ? `<p>${card.description}</p>` : "";
@@ -39,15 +67,15 @@ export class Cards {
 
         const rarity = card.on_hover?.rarity?.toLowerCase() || "common";
         const rarity_class = rarity && rarity !== "common" ? `rarity_${rarity}` : "";
-        const img_url = card.image ? resolve_image_path(card.image, "/pluck/ui/assets/cards/") : null;
-        const img = img_url ? `<div class="body_card_image ${rarity_class}"><div class="body_card_image_wrapper"><img src="${img_url}" alt="cardimg"></div></div>` : "";
+        const media = this.create_media(card);
+        const progress = this.create_progress(card);
 
         const buttons = Array.isArray(card.buttons) && card.buttons.length ? `<div class="body_card_actions">${new Buttons({
             buttons: card.buttons.map((b, i) => ({ ...b, id: b.id || `card_btn_${i}`, dataset: { card_id: card.id || `card_${index}`, ...(b.dataset || {}) } })),
             classes: "cards"
         }).get_html()}</div>` : "";
 
-        return `<div class="body_card ${this.flex} ${rarity_class}" data-card-index="${index}" data-category="${category}" ${dataset_attrs} ${tooltip_data}>${img}<div class="body_card_info">${title}${desc}</div>${buttons}</div>`.trim();
+        return `<div class="body_card ${this.flex} ${rarity_class}" data-card-index="${index}" data-category="${category}" ${dataset_attrs} ${tooltip_data}>${media}<div class="body_card_info">${title}${desc}${progress}</div>${buttons}</div>`.trim();
     }
 
 }

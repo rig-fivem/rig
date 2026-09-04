@@ -101,14 +101,14 @@ const cards_test = {
 
     left: {
         type: "cards",
-        layout: { columns: 2, flex: "column", scroll_x: "none" },
+        layout: { columns: 1, flex: "row", scroll_x: "none" },
         title: { text: "Left Section", span: "Span" },
         cards: [
             {
                 image: "https://placehold.co/252x126",
                 title: "Card In Column",
                 description: "Card Description.",
-                layout: "column",
+                layout: "row",
                 on_hover: card_hover_john,
                 buttons: [shared_card_btn]
             },
@@ -116,7 +116,16 @@ const cards_test = {
                 image: "https://placehold.co/252x126",
                 title: "Card In Column",
                 description: "Card Description.",
-                layout: "column",
+                layout: "row",
+                on_hover: card_hover_case,
+                buttons: [single_card_btn]
+            },
+            {
+                icon: "fa-solid fa-hammer",
+                title: "Crafting",
+                description: "Level 12",
+                layout: "row",
+                progress: 65,
                 on_hover: card_hover_case,
                 buttons: [single_card_btn]
             }

@@ -69,7 +69,9 @@ AddEventHandler("onResourceStart", function(res)
         { name = "avatar", priority = 100 },
         { name = "statuses", priority = 99 },
         { name = "spawns", priority = 98 },
-        { name = "inventory", priority = 97 }
+        { name = "inventory", priority = 97 },
+        { name = "groups", priority = 96 },
+        { name = "skills", priority = 95 }
     }
 
     for _, ext in ipairs(extensions) do

@@ -18,6 +18,11 @@ local TICK_RATE = GAMEPLAY.tick_rate or 5000
 local DELTA = TICK_RATE / 1000
 local PLAYER_SAVE = (GAMEPLAY.save_interval or 5) * 60 * 1000
 
+--- @section Main Routing Bucket
+
+SetRoutingBucketPopulationEnabled(0, GAMEPLAY.routing_bucket_population_enabled)
+SetRoutingBucketEntityLockdownMode(0, GAMEPLAY.routing_bucket_lockdown_mode)
+
 --- @section Player Tick
 
 CreateThread(function()
