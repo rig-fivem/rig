@@ -34,6 +34,7 @@ server_scripts {
     "src/server/**/registry.lua",
     "src/server/gameplay.lua",
     "src/server/main.lua",
+    "src/server/commands.lua",
 
     "tests/server/*.lua"
 }

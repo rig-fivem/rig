@@ -147,11 +147,14 @@ end
 
 function Spawns:spawn_player(coords)
     local player = self.player
-    if player:is_playing() then return false end
+
+    if player:is_playing() then
+        return false
+    end
 
     local ped = GetPlayerPed(player.source)
     if player.statuses and player.statuses:is_dead() then
-        player.statuses:respawn()
+        player.statuses:respawn_player()
     end
 
     FreezeEntityPosition(ped, true)

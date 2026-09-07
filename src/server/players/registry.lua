@@ -55,6 +55,12 @@ function PlayerRegistry:set_bucket(source, bucket_id)
     self.player_buckets[source] = bucket_id
     SetPlayerRoutingBucket(source, bucket_id)
     log("debug", ("Set routing bucket %d for source %d"):format(bucket_id, source))
+
+    local player = self.players[source]
+    if player then
+        player:emit("bucket_changed", bucket_id)
+    end
+
     return true
 end
 

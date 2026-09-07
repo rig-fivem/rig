@@ -20,7 +20,7 @@ export class Notify {
         if ($(`#${this.container_id}`).length) return;
         const style = this.resolve_position_style();
         const dir = this.fill_direction === "up" ? "column-reverse" : "column";
-        $("body").append(`<div id="${this.container_id}" class="notify_container" style="position:absolute;${style.position};display:flex;flex-direction:${dir};align-items:${style.align};justify-content:${style.justify};gap:1.5vh;z-index:9999;pointer-events:none;"></div>`);
+        $("#overlay").append(`<div id="${this.container_id}" class="notify_container" style="position:absolute;${style.position};display:flex;flex-direction:${dir};align-items:${style.align};justify-content:${style.justify};gap:1.5vh;z-index:9999;pointer-events:none;"></div>`);
     }
 
     resolve_position_style() {

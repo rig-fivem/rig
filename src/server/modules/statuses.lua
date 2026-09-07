@@ -39,14 +39,14 @@ end
 
 function m.get_player_injury(source, part)
     local p = core.players:get(source)
-    if not p or not p.statuses then return nil end
-    return p.statuses:get_injury(part)
+    if not p or not p.injuries then return nil end
+    return p.injuries:get(part)
 end
 
 function m.get_player_effect(source, effect_name)
     local p = core.players:get(source)
-    if not p or not p.statuses then return nil end
-    return p.statuses:get_effect(effect_name)
+    if not p or not p.effects then return nil end
+    return p.effects:get(effect_name)
 end
 
 --- @section State Checks
@@ -85,54 +85,54 @@ end
 
 function m.set_player_injury(source, part, damage)
     local p = core.players:get(source)
-    if not p or not p.statuses then
-        log("warn", ("Function: set_player_injury failed | Reason: no player/statuses instance for source %d"):format(source))
+    if not p or not p.injuries then
+        log("warn", ("Function: set_player_injury failed | Reason: no player/injuries instance for source %d"):format(source))
         return false
     end
 
-    return p.statuses:set_injury(part, damage)
+    return p.injuries:set(part, damage)
 end
 
 function m.modify_player_injury(source, part, delta)
     local p = core.players:get(source)
-    if not p or not p.statuses then
-        log("warn", ("Function: modify_player_injury failed | Reason: no player/statuses instance for source %d"):format(source))
+    if not p or not p.injuries then
+        log("warn", ("Function: modify_player_injury failed | Reason: no player/injuries instance for source %d"):format(source))
         return false
     end
 
-    return p.statuses:modify_injury(part, delta)
+    return p.injuries:modify(part, delta)
 end
 
 --- @section Effects
 
 function m.apply_player_status_effect(source, effect_name, opts)
     local p = core.players:get(source)
-    if not p or not p.statuses then
-        log("warn", ("Function: apply_player_status_effect failed | Reason: no player/statuses instance for source %d"):format(source))
+    if not p or not p.effects then
+        log("warn", ("Function: apply_player_status_effect failed | Reason: no player/effects instance for source %d"):format(source))
         return false
     end
 
-    return p.statuses:add_effect(effect_name, opts)
+    return p.effects:add(effect_name, opts)
 end
 
 function m.remove_player_status_effect(source, effect_name)
     local p = core.players:get(source)
-    if not p or not p.statuses then
-        log("warn", ("Function: remove_player_status_effect failed | Reason: no player/statuses instance for source %d"):format(source))
+    if not p or not p.effects then
+        log("warn", ("Function: remove_player_status_effect failed | Reason: no player/effects instance for source %d"):format(source))
         return false
     end
 
-    return p.statuses:remove_effect(effect_name)
+    return p.effects:remove(effect_name)
 end
 
 function m.clear_player_status_effects(source)
     local p = core.players:get(source)
-    if not p or not p.statuses then
-        log("warn", ("Function: clear_player_status_effects failed | Reason: no player/statuses instance for source %d"):format(source))
+    if not p or not p.effects then
+        log("warn", ("Function: clear_player_status_effects failed | Reason: no player/effects instance for source %d"):format(source))
         return false
     end
 
-    return p.statuses:clear_effects()
+    return p.effects:clear_effects()
 end
 
 --- @section Actions
@@ -144,7 +144,7 @@ function m.respawn_player(source)
         return false
     end
 
-    p.statuses:respawn()
+    p.statuses:respawn_player()
     return true
 end
 
@@ -201,6 +201,23 @@ function m.begin_player_respawn(source)
     p.statuses:begin_respawn()
     return true
 end
+
+--- @section Events
+
+RegisterServerEvent("rig:server:update_health_armour", function(data)
+    local _src = source
+    local player = core.players:get(_src)
+    if not player or not player:has_loaded() then
+        print(("[rig:sv:update_health_armour] Player %s not found or not loaded"):format(_src))
+        return
+    end
+    local ped = GetPlayerPed(_src)
+    local real_health = GetEntityHealth(ped)
+    local real_armour = GetPedArmour(ped)
+
+    player.statuses:set_bulk({ health = real_health, armour = real_armour })
+    player:sync_data()
+end)
 
 --- @section Exports
 

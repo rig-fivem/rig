@@ -57,8 +57,11 @@ function m.register_command(opts)
         if has_permission(source, opts.ace) then
             opts.handler(source, args, raw)
         else
-            TriggerClientEvent("chat:addMessage", source, {
-                args = { "^1PERMISSION DENIED", "You don't have permission to use this command." }
+            exports.rig:notify(source, {
+                header = "COMMANDS",
+                type = "error",
+                message = "You don't have permission to use this command.",
+                duration = 3500
             })
         end
     end, false)

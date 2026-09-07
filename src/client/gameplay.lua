@@ -91,3 +91,19 @@ if GAMEPLAY.disable_wanted or GAMEPLAY.artificial_lights then
         end
     end)
 end
+
+CreateThread(function()
+    local last_health = 200
+    local last_armour = 0
+    while true do
+        local ped = PlayerPedId()
+        local health = GetEntityHealth(ped)
+        local armour = GetPedArmour(ped)
+        if health ~= last_health or armour ~= last_armour then
+            last_health = health
+            last_armour = armour
+            TriggerServerEvent("rig:server:update_health_armour", { health = health, armour = armour })
+        end
+        Wait(50)
+    end
+end)

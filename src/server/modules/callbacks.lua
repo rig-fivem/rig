@@ -28,7 +28,9 @@ local callbacks = {}
 --- @section Functions
 
 function m.register_callback(name, cb)
-    if not name or type(cb) ~= "function" then
+    local is_valid_cb = type(cb) == "function" or (type(cb) == "table" and (cb.__cfx_functionReference or cb._cfgFunction))
+
+    if not name or not is_valid_cb then
         print(("[callbacks] Failed to register callback: %s"):format(name or "nil"))
         return
     end

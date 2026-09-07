@@ -10,7 +10,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 .notify_container {
     pointer-events: none;
-    z-index: 1000;
+    z-index: 99999;
 }
 
 .notify {

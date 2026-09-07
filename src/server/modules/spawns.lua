@@ -61,7 +61,7 @@ end
 RegisterServerEvent("rig:server:request_spawn")
 AddEventHandler("rig:server:request_spawn", function()
     local _src = source
-    if not _src then return end
+    if not _src then log("error", "request_spawn source missing") return end
 
     local spawns = m.request_spawns(_src)
     if not spawns then

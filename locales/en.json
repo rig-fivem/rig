@@ -13,6 +13,18 @@
         },
         "player": {
             "disconnected": "You have disconnected from the server!"
+        },
+        "statuses": {
+            "commands": {
+                "player_not_found": "Player not found.",
+                "player_revived": "Player %d has been revived.",
+                "player_killed": "Player %d has been killed.",
+                "player_downed": "Player %d has been downed."
+            },
+            "log_player_revived": "Player %s was revived.",
+            "log_player_died": "Player %s died.",
+            "log_player_downed": "Player %s was downed.",
+            "log_player_picked_up": "Player %s was picked up."
         }
     }
 }

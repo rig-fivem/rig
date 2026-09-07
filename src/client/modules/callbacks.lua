@@ -29,7 +29,9 @@ local cb_id = 0
 --- @section Functions
 
 function m.trigger_callback(name, data, cb)
-    if type(cb) ~= "function" then
+    local is_valid = type(cb) == "function" or (type(cb) == "table" and (cb.__cfx_functionReference or cb._cfgFunction))
+    
+    if not is_valid then
         print(("[callbacks] Error: Trigger '%s' called without a valid callback function"):format(tostring(name)))
         return
     end

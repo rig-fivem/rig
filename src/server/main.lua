@@ -68,10 +68,12 @@ AddEventHandler("onResourceStart", function(res)
     local extensions = {
         { name = "avatar", priority = 100 },
         { name = "statuses", priority = 99 },
-        { name = "spawns", priority = 98 },
-        { name = "inventory", priority = 97 },
-        { name = "groups", priority = 96 },
-        { name = "skills", priority = 95 }
+        { name = "effects", priority = 98 },
+        { name = "injuries", priority = 97 },
+        { name = "spawns", priority = 96 },
+        { name = "inventory", priority = 95 },
+        { name = "groups", priority = 94 },
+        { name = "skills", priority = 93 }
     }
 
     for _, ext in ipairs(extensions) do
