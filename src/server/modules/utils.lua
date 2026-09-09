@@ -12,9 +12,16 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/server/modules/utils.lua
 --- @description Handles all server side utility functions.
 
+--- @section Guard
+
+if rawget(_G, "__server_utils_module") then
+    return _G.__server_utils_module
+end
+
 --- @section Initialisation
 
 local m = {}
+_G.__server_utils_module = m
 
 --- @section Player Functions
 
@@ -27,5 +34,9 @@ function m.get_identifiers(source)
     end
     return ids
 end
+
+--- @section Exports
+
+exports("get_identifiers", m.get_identifiers)
 
 return m

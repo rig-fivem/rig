@@ -237,30 +237,6 @@ function m.get_player_headshot(player_ped)
     return txd and ("https://nui-img/%s/%s?v=%d"):format(txd, txd, GetGameTimer())
 end
 
---- @section HUD
-
-function m.send_headshot()
-    local src = m.get_player_headshot()
-    SendNUIMessage({ func = "set_status_headshot", payload = { src = src } })
-end
-
-function m.show_status_hud()
-    SendNUIMessage({ func = "show_status_hud" })
-end
-
-function m.hide_status_hud()
-    SendNUIMessage({ func = "hide_status_hud" })
-end
-
-function m.update_status_hud(data)
-    if not data then return end
-    SendNUIMessage({ func = "update_status_hud", payload = data })
-end
-
-function m.destroy_status_hud()
-    SendNUIMessage({ func = "destroy_status_hud" })
-end
-
 --- @section NUI Callbacks
 
 RegisterNUICallback("nui:remove_focus", function()
@@ -344,5 +320,7 @@ exports("cancel_progress_circle", m.cancel_progress_circle)
 
 exports("build_ui", m.build_ui)
 exports("close_ui", m.close_ui)
+
+exports("get_player_headshot", m.get_player_headshot)
 
 return m

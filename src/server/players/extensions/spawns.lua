@@ -153,7 +153,7 @@ function Spawns:spawn_player(coords)
     end
 
     local ped = GetPlayerPed(player.source)
-    if player.statuses and player.statuses:is_dead() then
+    if player.statuses and (player.statuses:get("is_respawning") or player.statuses:is_dead()) then
         player.statuses:respawn_player()
     end
 

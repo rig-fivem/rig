@@ -210,44 +210,6 @@ function m.close_ui(source)
     TriggerClientEvent("rig:client:close_ui", source)
 end
 
---- @section HUD
-
-function m.show_status_hud(source)
-    if not source then
-        log("error", "gui: show_status_hud called with missing source")
-        return
-    end
-
-    TriggerClientEvent("rig:client:show_status_hud", source)
-end
-
-function m.hide_status_hud(source)
-    if not source then
-        log("error", "gui: hide_status_hud called with missing source")
-        return
-    end
-
-    TriggerClientEvent("rig:client:hide_status_hud", source)
-end
-
-function m.update_status_hud(source, data)
-    if not source or not data then
-        log("error", "gui: update_status_hud called with missing source or data")
-        return
-    end
-
-    TriggerClientEvent("rig:client:update_status_hud", source, data)
-end
-
-function m.destroy_status_hud(source)
-    if not source then
-        log("error", "gui: destroy_status_hud called with missing source")
-        return
-    end
-
-    TriggerClientEvent("rig:client:destroy_status_hud", source)
-end
-
 --- @section Events
 
 RegisterServerEvent("rig:server:nui_handler")
@@ -289,10 +251,5 @@ exports("cancel_progress_circle", m.cancel_progress_circle)
 
 exports("build_ui", m.build_ui)
 exports("close_ui", m.close_ui)
-
-exports("show_status_hud", m.show_status_hud)
-exports("hide_status_hud", m.hide_status_hud)
-exports("update_status_hud", m.update_status_hud)
-exports("destroy_status_hud", m.destroy_status_hud)
 
 return m
