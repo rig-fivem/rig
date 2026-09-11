@@ -184,8 +184,6 @@ CREATE TABLE IF NOT EXISTS `inventories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Delimiter; removes player inventories when `user` account is removed.
-DELIMITER $$
-
 DROP TRIGGER IF EXISTS trg_users_after_delete;
 
 CREATE TRIGGER trg_users_after_delete
@@ -195,6 +193,4 @@ BEGIN
     DELETE FROM inventories
     WHERE owner = OLD.unique_id
       AND inventory_type = 'player';
-END$$
-
-DELIMITER ;
+END;
