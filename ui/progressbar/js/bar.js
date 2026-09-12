@@ -16,7 +16,7 @@ export class ProgressBar {
         }
         ProgressBar.current = this;
 
-        this.header = data.header || "No header";
+        this.message = data.message || "No message";
         this.duration = data.duration || 5000;
         this._interval_id = null;
 
@@ -41,8 +41,8 @@ export class ProgressBar {
 
         const content = `
             <div class="progressbar">
-                <div class="progressbar_header">
-                    <h3>${this.header}</h3>
+                <div class="progressbar_message">
+                    <h3>${this.message}</h3>
                 </div>
                 <div class="progressbar_body">
                     ${segment_html}

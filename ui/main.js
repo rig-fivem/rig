@@ -13,6 +13,8 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 import { Modal } from "./modal/js/modal.js";
 import { Notify } from "./notify/js/notify.js";
 import { UIBuilder } from "./framework/js/main.js";
+import { ProgressCircle } from "./progressbar/js/circle.js";
+import { ProgressBar } from "./progressbar/js/bar.js"
 
 // Initialisation
 
@@ -80,6 +82,16 @@ HANDLERS.close_ui = () => {
         window.ui_instance = null;
     }
 };
+
+/** Progressbars */
+
+HANDLERS.progress_circle = (data) => {
+    new ProgressCircle(data.payload);
+}
+
+HANDLERS.progress_bar = (data) => {
+    new ProgressBar(data.payload);
+}
 
 /**
  * Global message listener for all NUI messages.

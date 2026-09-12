@@ -11,7 +11,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 fx_version "cerulean"
 games { "gta5" }
 name "rig"
-version "0.1.0"
+version "0.2.0"
 description "A purpose built survival framework built for FiveM."
 license "Apache 2.0"
 author "Case"

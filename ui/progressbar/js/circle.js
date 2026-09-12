@@ -20,7 +20,7 @@ export class ProgressCircle {
             segment_count: options.segments ?? 30,
             gap_angle: options.gap ?? 3,
             message: options.message,
-            duration: options.duration
+            duration: options.duration / 1000
         };
 
         this.build();

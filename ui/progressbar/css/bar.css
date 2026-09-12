@@ -35,14 +35,14 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
     padding: 1vh 1.5vh;
 }
 
-.progressbar_header {
+.progressbar_message {
     display: flex;
     align-items: center;
     width: 100%;
     color: var(--text_primary);
 }
 
-.progressbar_header h3 {
+.progressbar_message h3 {
     font-size: 0.75rem;
     font-weight: normal;
     text-transform: uppercase;

@@ -196,7 +196,7 @@ test_kv_display.set_kvps("PLACEMENT MODE", [
 ]);
 test_kv_display.show();
 
-const test_prog_bar = new ProgressBar({ header: "Uploading...", duration: 800000 });
+const test_prog_bar = new ProgressBar({ message: "Uploading...", duration: 800000 });
 
 const notify = new Notify({
     position: "right-center",
