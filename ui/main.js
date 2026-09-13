@@ -19,7 +19,7 @@ import { ProgressBar } from "./progressbar/js/bar.js"
 // Initialisation
 
 const NOTIFY = new Notify({
-    position: "right-center",
+    position: "right-top",
     fill_direction: "up"
 });
 

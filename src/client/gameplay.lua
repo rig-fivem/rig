@@ -56,13 +56,13 @@ if GAMEPLAY.disable_weapon_autoswap then
     SetWeaponsNoAutoswap(true)
 end
 
-if GAMEPLAY.hide_hud_components or GAMEPLAY.DISABLED_CONTROLS or GAMEPLAY.hide_ammo or GAMEPLAY.invalidate_idle_cam then
+if GAMEPLAY.hide_hud_components or GAMEPLAY.disabled_controls or GAMEPLAY.hide_ammo or GAMEPLAY.invalidate_idle_cam then
     CreateThread(function()
         while true do
             if GAMEPLAY.hide_hud_components then
                 for i = 1, #HUD_COMPONENTS do HideHudComponentThisFrame(HUD_COMPONENTS[i]) end
             end
-            if GAMEPLAY.DISABLED_CONTROLS then
+            if GAMEPLAY.disabled_controls then
                 for i = 1, #DISABLED_CONTROLS do DisableControlAction(0, DISABLED_CONTROLS[i], true) end
             end
             if GAMEPLAY.hide_ammo then

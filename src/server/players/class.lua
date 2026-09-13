@@ -124,6 +124,8 @@ function Player:save()
 
     log("debug", ("Saving player data for source %d..."):format(self.source))
 
+    self:emit("before_save")
+
     local queries = {}
     for name, ext in pairs(priv.extensions) do
         if ext.on_save then
@@ -137,7 +139,6 @@ function Player:save()
         end
     end
 
-    self:emit("before_save", queries)
     if #queries > 0 then
         _db.transaction(queries)
         log("debug", ("Executed %d save queries for source %d"):format(#queries, self.source))
@@ -245,7 +246,6 @@ function Player:sync_data(category)
         for k in pairs(priv.replicated) do payload[k] = priv.data[k] end
     end
     TriggerClientEvent("rig:client:sync_player_data", self.source, payload)
-    log("debug", ("Synced player data (%s) to client for source %d"):format(category or "all", self.source))
     self:emit("synced", payload)
 end
 
