@@ -32,10 +32,10 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
     --border_radius_inner: 1px;
 
     /* Backgrounds */
-    --background_overlay: rgba(0, 0, 0, 0.85);
-    --background_main: rgba(18, 18, 18, 0.85);
-    --background_panel: rgba(22, 22, 22, 0.85);
-    --background_hover: rgba(28, 28, 28, 0.85);
+    --background_overlay: rgba(0, 0, 0, 0.75);
+    --background_main: rgba(18, 18, 18, 0.75);
+    --background_panel: rgba(22, 22, 22, 0.75);
+    --background_hover: rgba(28, 28, 28, 0.5);
 
     /* Text */
     --text_primary: #fff;

@@ -11,14 +11,21 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 .hotbar_wrapper {
     position: fixed;
     left: 50%;
-    bottom: 3vh;
+    bottom: 0;
     transform: translateX(-50%);
     z-index: 11;
-    background: var(--background_main);
-    border: 0.1vh solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--border_radius_outer);
-    padding: 0.5vh;
+    padding: 2vw 4vw;
     user-select: none;
+    overflow: visible;
+}
+
+.hotbar_wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0, 0, 0, 0.45) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
 }
 
 .hotbar_wrapper .slot_group {
@@ -31,7 +38,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 .hotbar_wrapper .slots_container {
     display: grid;
-    gap: 0.4vh;
+    gap: 0.5vh;
     border: none !important;
     overflow: hidden;
 }
@@ -42,10 +49,16 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 .hotbar_wrapper .body_slot {
     border-radius: var(--border_radius_inner);
+    background: var(--background_panel);
 }
 
 .hotbar_wrapper .slot_hotkey {
-    top: 0.3vh;
-    left: 0.3vh;
-    padding: 0.15vh 0.4vh;
+    top: 0;
+    left: 0;
+    padding: 0.1vh 0.4vh;
+    font-size: 1.2rem;
+    font-weight: normal;
+    background: var(--background_hover);
+    color: var(--text_primary);
+    font-family: var(--header_font)
 }

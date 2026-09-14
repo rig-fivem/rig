@@ -191,7 +191,7 @@ end
 
 --- @section UI Framework
 
-function m.build_ui(ui)
+function m.build_ui(ui, skip_focus)
     if not ui then
         log("error", "nui: build_ui called with missing ui")
         return
@@ -203,13 +203,45 @@ function m.build_ui(ui)
         return
     end
 
-    SetNuiFocus(true, true)
+    if not skip_focus then
+        SetNuiFocus(true, true)
+    end
     SendNUIMessage({ func = "build_ui", payload = safe_ui })
 end
 
 function m.close_ui()
     SendNUIMessage({ func = "close_ui" })
     SetNuiFocus(false, false)
+end
+
+function m.update_slots(items)
+    if type(items) ~= "table" then
+        log("warn", "update_slots: invalid items table")
+        return
+    end
+
+    local safe_items = m.sanitize(items, "update_slots")
+
+    SendNUIMessage({ func = "update_slots", items = safe_items })
+end
+
+function m.update_grid(items, section_key)
+    if type(items) ~= "table" then
+        log("warn", "update_grid: invalid items table")
+        return
+    end
+
+    local safe_items = m.sanitize(items, "update_grid")
+
+    SendNUIMessage({ func = "update_grid", items = safe_items, section_key = section_key })
+end
+
+function m.set_slot_move_handler(func)
+    core.nui.slot_move_handler = func
+end
+
+function m.set_grid_move_handler(func)
+    core.nui.grid_move_handler = func
 end
 
 --- @section Headshot
@@ -237,6 +269,51 @@ function m.get_player_headshot(player_ped)
     return txd and ("https://nui-img/%s/%s?v=%d"):format(txd, txd, GetGameTimer())
 end
 
+--- @section Inventory
+
+function m.build_hotbar(opts)
+    if not opts then
+        log("error", "nui: build_hotbar called with missing opts")
+        return
+    end
+
+    local safe_opts = m.sanitize(opts, "hotbar")
+    if not safe_opts then
+        log("error", "nui: build_hotbar sanitize failed")
+        return
+    end
+
+    SendNUIMessage({
+        func = "build_hotbar",
+        payload = safe_opts
+    })
+end
+
+function m.destroy_hotbar()
+    SendNUIMessage({
+        func = "destroy_hotbar"
+    })
+end
+
+function m.update_hotbar(items)
+    if type(items) ~= "table" then
+        log("warn", "update_hotbar: invalid items table")
+        return
+    end
+
+    local safe_items = m.sanitize(items, "hotbar")
+
+    SendNUIMessage({ func = "update_hotbar", items = safe_items })
+end
+
+function m.inventory_popup(data)
+    if not data then return end
+    SendNUIMessage({
+        func = "inventory_popup",
+        payload = data
+    })
+end
+
 --- @section NUI Callbacks
 
 RegisterNUICallback("nui:remove_focus", function()
@@ -249,6 +326,26 @@ RegisterNUICallback("nui:handler", function(data, cb)
 
     if not data or not data.action then
         if cb then cb(false) end
+        return
+    end
+
+    if data.action == "slots_moved_item" then
+        if core.nui.slot_move_handler then
+            core.nui.slot_move_handler(data.dataset)
+        else
+            log("warn", "No slot_move_handler set, skipping")
+        end
+        if cb then cb({ success = true }) end
+        return
+    end
+
+    if data.action == "grid_moved_item" then
+        if core.nui.grid_move_handler then
+            core.nui.grid_move_handler(data.dataset)
+        else
+            log("warn", "No grid_move_handler set, skipping")
+        end
+        if cb then cb({ success = true }) end
         return
     end
 
@@ -320,6 +417,12 @@ exports("cancel_progress_circle", m.cancel_progress_circle)
 
 exports("build_ui", m.build_ui)
 exports("close_ui", m.close_ui)
+exports("build_hotbar", m.build_hotbar)
+exports("update_hotbar", m.update_hotbar)
+exports("update_grid", m.update_grid)
+exports("update_slots", m.update_slots)
+exports("set_slot_move_handler", m.set_slot_move_handler)
+exports("set_grid_move_handler", m.set_grid_move_handler)
 
 exports("get_player_headshot", m.get_player_headshot)
 

@@ -19,7 +19,6 @@ export class UIBuilder {
         this.footer_config = footer; 
         this.content_config = content; 
         this.tooltip = new Tooltip();
-        window.ui_instance = this;
         this.main_container = $("#ui_main");
         this.build();
     }
@@ -63,7 +62,7 @@ export class UIBuilder {
 
     build_content() {
         if (!this.content_config.pages || typeof this.content_config.pages !== "object") return this.set_content();
-        this.content = new Content(this.content_config.pages, "builder_content");
+        this.content = new Content(this.content_config.pages, "builder_content", undefined, this.content_config.hotbar);
         this.content.append_to("#content_container");
 
         const default_tab = this.get_default_page();
@@ -96,8 +95,6 @@ export class UIBuilder {
             $vignette.css("background", "var(--gradient_fade_both)");
         } else if (has_right) {
             $vignette.css("background", "var(--gradient_fade_right)");
-        } else {
-            $vignette.css("background", "var(--gradient_fade_left)");
         }
     }
 
@@ -111,7 +108,14 @@ export class UIBuilder {
             $("#modal_container").remove();
         }
 
+        const $hotbar = this.main_container.find("#hotbar_container").detach();
+
         this.main_container.empty();
+
+        if ($hotbar.length) {
+            this.main_container.append($hotbar);
+        }
+
         this.header = null;
         this.footer = null;
         this.content = null;
