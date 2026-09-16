@@ -417,6 +417,31 @@ function m.is_radial_open()
     return is_radial_open
 end
 
+--- @section Text UI
+
+function m.update_text_ui(data)
+    SendNUIMessage({
+        func = "update_text_ui",
+        payload = data
+    })
+end
+
+function m.update_text_ui_quantity(amount)
+    SendNUIMessage({
+        func = "update_text_ui_quantity",
+        payload = { amount = amount }
+    })
+end
+
+function m.clear_text_ui()
+    SendNUIMessage({ func = "clear_text_ui" })
+end
+
+function m.destroy_text_ui()
+    SendNUIMessage({ func = "destroy_text_ui" })
+end
+
+
 --- @section Utility
 
 function m.copy_to_clipboard(string)
@@ -424,7 +449,7 @@ function m.copy_to_clipboard(string)
     SendNUIMessage({ func = "copy_to_clipboard", string = string })
 end
 
---- @section NUI Callbacks
+--- @section Shared NUI Callbacks
 
 RegisterNUICallback("nui:remove_focus", function()
     log("info", "nui: focus cleared")
@@ -484,23 +509,29 @@ RegisterNUICallback("nui:handler", function(data, cb)
     if cb then cb(true) end
 end)
 
+--- @section Radial Menu NUI Callbacks
+
 RegisterNUICallback("nui:close_radial", function(data, cb)
     is_radial_open = false
     SetNuiFocus(false, false)
     if cb then cb(true) end
 end)
 
---- @section Events
+--- @section Shared Events
 
 RegisterNetEvent("rig:client:remove_focus", function()
     SetNuiFocus(false, false)
 end)
+
+--- @section Notify Events
 
 RegisterNetEvent("rig:client:notify", function(opts)
     if not opts then return log("error", "nui: notify event missing opts") end
 
     m.notify(opts)
 end)
+
+--- @section Modal Events
 
 RegisterNetEvent("rig:client:build_modal", function(opts)
     if not opts then return log("error", "nui: build_modal event missing opts") end
@@ -513,6 +544,8 @@ RegisterNetEvent("rig:client:close_modal", function(container)
     m.close_modal(container)
 end)
 
+--- @section UI Framework Events
+
 RegisterNetEvent("rig:client:build_ui", function(opts)
     if not opts then return log("error", "nui: build_ui event missing opts") end
 
@@ -522,6 +555,8 @@ end)
 RegisterNetEvent("rig:client:close_ui", function()
     m.close_ui()
 end)
+
+--- @section Quickmenu Events
 
 RegisterNetEvent("rig:client:open_quickmenu", function(menu_data)
     if not menu_data then return end
@@ -537,10 +572,7 @@ RegisterNetEvent("rig:client:push_quickmenu_update", function(id, items, title)
     m.push_quickmenu_update()
 end)
 
-RegisterNetEvent("rig:client:build_radial", function(sections)
-    if not sections then return end
-    m.build_radial(sections)
-end)
+--- @section Radial Menu Events
 
 RegisterNetEvent("rig:client:open_radial", function()
     m.open_radial()
@@ -555,6 +587,48 @@ RegisterNetEvent("rig:client:copy_to_clipboard", function(string)
     m.copy_to_clipboard(string)
 end)
 
+--- @section KeyValue Display Events
+
+RegisterNetEvent("rig:client:set_kvp_display", function(title, controls, show)
+    m.set_kvp_display(title, controls, show)
+end)
+
+RegisterNetEvent("rig:client:show_kvp_display", function()
+    m.show_kvp_display()
+end)
+
+RegisterNetEvent("rig:client:hide_kvp_display", function()
+    m.hide_kvp_display()
+end)
+
+RegisterNetEvent("rig:client:toggle_kvp_display", function()
+    m.toggle_kvp_display()
+end)
+
+RegisterNetEvent("rig:client:destroy_kvp_display", function()
+    m.destroy_kvp_display()
+end)
+
+--- @section Text UI Events
+
+RegisterNetEvent("rig:client:update_text_ui", function(data)
+    if not data then return print("data missing") end
+    m.update_text_ui(data)
+end)
+
+RegisterNetEvent("rig:client:update_text_ui_quantity", function(amount)
+    if not amount then return print("amount missing") end
+    m.update_text_ui_quantity(amount)
+end)
+
+RegisterNetEvent("rig:client:clear_text_ui", function()
+    m.clear_text_ui()
+end)
+
+RegisterNetEvent("rig:client:destroy_text_ui", function()
+    m.destroy_text_ui()
+end)
+
 --- @section Exports
 
 exports("notify", m.notify)
@@ -566,6 +640,11 @@ exports("show_kvp_display", m.show_kvp_display)
 exports("hide_kvp_display", m.hide_kvp_display)
 exports("toggle_kvp_display", m.toggle_kvp_display)
 exports("destroy_kvp_display", m.destroy_kvp_display)
+
+exports("update_text_ui", m.update_text_ui)
+exports("update_text_ui_quantity", m.update_text_ui_quantity)
+exports("clear_text_ui", m.clear_text_ui)
+exports("destroy_text_ui", m.destroy_text_ui)
 
 exports("progress_bar", m.progress_bar)
 exports("cancel_progress_bar", m.cancel_progress_bar)
@@ -588,7 +667,6 @@ exports("close_quickmenu", m.close_quickmenu)
 exports("push_quickmenu_update", m.push_quickmenu_update)
 exports("copy_to_clipboard", m.copy_to_clipboard)
 
-exports("build_radial", m.build_radial)
 exports("open_radial", m.open_radial)
 exports("close_radial", m.close_radial)
 exports("is_radial_open", m.is_radial_open)

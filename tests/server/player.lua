@@ -56,6 +56,8 @@ commands.register_command({
         log("success", ("- Summary Method Output: %s"):format(tostring(summary)))
         log("success", ("- Active Extensions: %s"):format(table.concat(player:list_extensions(), ", ")))
         log("success", ("========================================"))
+
+        player:set_playing(true)
     end
 })
 

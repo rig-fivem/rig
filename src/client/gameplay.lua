@@ -11,6 +11,11 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 --- @file src/client/gameplay.lua
 --- @description Handles general client side gameplay rules, threads and setup.
 
+--- @section Imports
+
+local _zones = require("src.client.modules.zones")
+local _dui = require("src.client.modules.dui")
+
 --- @section Helper Functions
 
 local function split_ids(str)
@@ -19,6 +24,12 @@ local function split_ids(str)
         out[#out + 1] = tonumber(id)
     end
     return out
+end
+
+local function wait_until_playing()
+    while not core.client_player:is_playing() do
+        Wait(100)
+    end
 end
 
 --- @section Constants
@@ -58,19 +69,23 @@ end
 
 if GAMEPLAY.hide_hud_components or GAMEPLAY.disabled_controls or GAMEPLAY.hide_ammo or GAMEPLAY.invalidate_idle_cam then
     CreateThread(function()
+        wait_until_playing()
+
         while true do
-            if GAMEPLAY.hide_hud_components then
-                for i = 1, #HUD_COMPONENTS do HideHudComponentThisFrame(HUD_COMPONENTS[i]) end
-            end
-            if GAMEPLAY.disabled_controls then
-                for i = 1, #DISABLED_CONTROLS do DisableControlAction(0, DISABLED_CONTROLS[i], true) end
-            end
-            if GAMEPLAY.hide_ammo then
-                DisplayAmmoThisFrame(false)
-            end
-            if GAMEPLAY.invalidate_idle_cam then
-                InvalidateIdleCam()
-                InvalidateVehicleIdleCam()
+            if core.client_player:is_playing() then
+                if GAMEPLAY.hide_hud_components then
+                    for i = 1, #HUD_COMPONENTS do HideHudComponentThisFrame(HUD_COMPONENTS[i]) end
+                end
+                if GAMEPLAY.disabled_controls then
+                    for i = 1, #DISABLED_CONTROLS do DisableControlAction(0, DISABLED_CONTROLS[i], true) end
+                end
+                if GAMEPLAY.hide_ammo then
+                    DisplayAmmoThisFrame(false)
+                end
+                if GAMEPLAY.invalidate_idle_cam then
+                    InvalidateIdleCam()
+                    InvalidateVehicleIdleCam()
+                end
             end
             Wait(0)
         end
@@ -79,13 +94,17 @@ end
 
 if GAMEPLAY.disable_wanted or GAMEPLAY.artificial_lights then
     CreateThread(function()
+        wait_until_playing()
+
         while true do
-            if GAMEPLAY.disable_wanted then
-                ClearPlayerWantedLevel(player_id)
-            end
-            if GAMEPLAY.artificial_lights then
-                SetArtificialLightsState(true)
-                SetArtificialLightsStateAffectsVehicles(true)
+            if core.client_player:is_playing() then
+                if GAMEPLAY.disable_wanted then
+                    ClearPlayerWantedLevel(player_id)
+                end
+                if GAMEPLAY.artificial_lights then
+                    SetArtificialLightsState(true)
+                    SetArtificialLightsStateAffectsVehicles(true)
+                end
             end
             Wait(100)
         end
@@ -93,17 +112,36 @@ if GAMEPLAY.disable_wanted or GAMEPLAY.artificial_lights then
 end
 
 CreateThread(function()
+    wait_until_playing()
+
     local last_health = 200
     local last_armour = 0
+
     while true do
-        local ped = PlayerPedId()
-        local health = GetEntityHealth(ped)
-        local armour = GetPedArmour(ped)
-        if health ~= last_health or armour ~= last_armour then
-            last_health = health
-            last_armour = armour
-            TriggerServerEvent("rig:server:update_health_armour", { health = health, armour = armour })
+        if core.client_player:is_playing() then
+            local ped = PlayerPedId()
+            local health = GetEntityHealth(ped)
+            local armour = GetPedArmour(ped)
+            if health ~= last_health or armour ~= last_armour then
+                last_health = health
+                last_armour = armour
+                TriggerServerEvent("rig:server:update_health_armour", { health = health, armour = armour })
+            end
         end
         Wait(50)
     end
+end)
+
+--- @section Zones
+
+CreateThread(function()
+    wait_until_playing()
+
+    Wait(500)
+
+    _zones.start_zone_debug_thread()
+    _zones.start_zone_state_thread()
+    
+    _dui.start_proximity_thread()
+    _dui.start_render_thread()
 end)

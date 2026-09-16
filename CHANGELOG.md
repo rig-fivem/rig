@@ -1,3 +1,13 @@
+# v0.5.0
+- Added missing `KeyValuePairs` ui handlers and client events
+- Added `keys.lua` client side module
+- Added `zones.lua` client module, just a smaller version of my `zone_creator` script in graft without the drawn ui
+- Client side gameplay loops now wait until player is playing
+- Added `TextUI` & `DUISprite` from `rig_interactions`
+- Added new `dui.lua` client module
+- Added all exports for textui into client `nui.lua` module
+- Combined `TextUI` & `KeyValuePairs` into new `displays` folder
+
 # v0.4.0
 - Added new menu system that was built for `rig_admin` have some other use cases for it than just that; `exports.rig:open_quickmenu(menu)`, `close_quickmenu()`, `is_quickmenu_open()`, `push_quickmenu_update()`.
 - Moved `helpers.js` to `ui/` instead of being nested in framework stuff.

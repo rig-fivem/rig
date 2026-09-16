@@ -1,0 +1,64 @@
+/*
+----------------------------------------
+RIG Framework (built for RIG-FiveM)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+*/
+
+.text_ui {
+    position: absolute;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+    font-family: var(--header_font);
+    background: var(--background_main);
+    border: 0.1vh solid rgba(255, 255, 255, 0.06);
+    border-top: 0.2vh solid var(--accent);
+    padding: 0.75vh 1vw;
+}
+
+.text_ui.accent_top { border-top: 0.2vh solid var(--accent); }
+.text_ui.accent_bottom { border-bottom: 0.2vh solid var(--accent); }
+
+.text_ui_item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1vh;
+}
+
+.text_ui_item img {
+    height: 3vh;
+    padding: 0.4vh;
+    object-fit: cover;
+    background: var(--background_panel);
+    border: 0.1vh solid rgba(255, 255, 255, 0.08);
+}
+
+.text_ui_message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--text_primary);
+    line-height: 0.8;
+}
+
+#text_ui_status {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    color: var(--text_primary);
+}
+
+#text_ui_action {
+    font-family: var(--text_font);
+    font-size: 0.65rem;
+    color: var(--text_secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}

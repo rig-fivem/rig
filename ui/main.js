@@ -18,6 +18,8 @@ import { ProgressBar } from "./progressbar/js/bar.js"
 import { SlotPopup } from "./framework/js/components/inventory_popup.js";
 import { QuickMenu } from "./menus/js/quickmenu.js"
 import { RadialMenu } from "./menus/js/radialmenu.js";
+import { KeyValuePairs } from "./displays/js/kvp.js";
+import { TextUI } from "./displays/js/text_ui.js";
 
 // Initialisation
 
@@ -26,10 +28,13 @@ const NOTIFY = new Notify({
     fill_direction: "up"
 });
 
+const kvp_display = new KeyValuePairs();
+
 const inventory_popup = new SlotPopup({ position: "bottom-center" });
 
 let quickmenu = null;
 let radial = null;
+let text_ui = null;
 
 const HANDLERS = {}
 
@@ -64,6 +69,38 @@ HANDLERS.build_modal = (data) => {
 HANDLERS.remove_modal = (data) => {
     const container = data && data.payload && data.payload.container ? data.payload.container : "#ui_focus";
     Modal.remove(container);
+};
+
+/** KeyValue Display */
+
+HANDLERS.set_kvp_display = (data) => {
+    if (!data || !data.payload) {
+        console.warn("[KVP Display] Missing payload.");
+        return;
+    }
+
+    const { title, controls, show } = data.payload;
+    kvp_display.set_kvps(title, controls);
+
+    if (show) {
+        kvp_display.show();
+    }
+};
+
+HANDLERS.show_kvp_display = () => {
+    kvp_display.show();
+};
+
+HANDLERS.hide_kvp_display = () => {
+    kvp_display.hide();
+};
+
+HANDLERS.toggle_kvp_display = () => {
+    kvp_display.toggle();
+};
+
+HANDLERS.destroy_kvp_display = () => {
+    kvp_display.destroy();
 };
 
 /** UI Framework */
@@ -227,6 +264,34 @@ HANDLERS.close_radial = () => {
     }
     radial.close();
 };
+
+/** Text UI */
+
+HANDLERS.update_text_ui = (data) => {
+    if (!text_ui) {
+        text_ui = new TextUI();
+    }
+    text_ui.set_data(data.payload);
+}
+
+HANDLERS.update_hint_quantity = (data) => {
+    if (text_ui) {
+        text_ui.update_quantity(data.payload.amount);
+    }
+}
+
+HANDLERS.clear_text_ui = () => {
+    if (text_ui) {
+        text_ui.clear();
+    }
+}
+
+HANDLERS.destroy_text_ui = () => {
+    if (text_ui) {
+        text_ui.destroy();
+        text_ui = null;
+    }
+}
 
 /** Utility */
 
