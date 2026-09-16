@@ -8,7 +8,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 ----------------------------------------
 */
 
-import { resolve_image_path } from "../helpers.js";
+import { resolve_image_path } from "../../../helpers.js";
 
 export class SlotPopup {
     constructor(config = {}) {

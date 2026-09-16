@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { Modal } from "../../../modal/js/modal.js"
-import { send_nui_callback } from "../helpers.js";
+import { send_nui_callback } from "../../../helpers.js";
 
 export class Tooltip {
     constructor(selector = "#tooltip") {

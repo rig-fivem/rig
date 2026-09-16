@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { Buttons } from "./buttons.js"
-import { send_nui_callback } from "../helpers.js";
+import { send_nui_callback } from "../../../helpers.js";
 
 export class Footer {
     constructor({ layout = {}, elements = {}, on_action = null, on_button_action = null }) {

@@ -8,7 +8,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 ----------------------------------------
 */
 
-import { resolve_image_path } from "../helpers.js";
+import { resolve_image_path } from "../../../helpers.js";
 
 export class InventorySlot {
     constructor({ title = "", layout = {}, slot_count = 40, groups = null, on_swap = null, on_drop_to_grid = null, section_key = null, page_items = {}, draggable = true }) {

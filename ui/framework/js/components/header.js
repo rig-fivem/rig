@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { Buttons } from "./buttons.js"
-import { resolve_image_path } from "../helpers.js";
+import { resolve_image_path } from "../../../helpers.js";
 
 export class Header {
     constructor({ layout = {}, elements = {}, on_tab_click = null, on_button_action = null }) {

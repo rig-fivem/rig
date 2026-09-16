@@ -9,7 +9,6 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { Buttons } from "../../framework/js/components/buttons.js"
-import { send_nui_callback } from "../../framework/js/helpers.js";
 
 export class Modal {
     constructor({ title = "Input Required", options = [], buttons = [], classes = "" } = {}) {

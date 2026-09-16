@@ -16,6 +16,8 @@ import { UIBuilder } from "./framework/js/main.js";
 import { ProgressCircle } from "./progressbar/js/circle.js";
 import { ProgressBar } from "./progressbar/js/bar.js"
 import { SlotPopup } from "./framework/js/components/inventory_popup.js";
+import { QuickMenu } from "./menus/js/quickmenu.js"
+import { RadialMenu } from "./menus/js/radialmenu.js";
 
 // Initialisation
 
@@ -25,6 +27,9 @@ const NOTIFY = new Notify({
 });
 
 const inventory_popup = new SlotPopup({ position: "bottom-center" });
+
+let quickmenu = null;
+let radial = null;
 
 const HANDLERS = {}
 
@@ -172,12 +177,89 @@ HANDLERS.progress_bar = (data) => {
     new ProgressBar(data.payload);
 }
 
+/** Menus */
+
+HANDLERS.build_quickmenu = (data) => {
+    if (!data || !data.payload) {
+        console.warn("[quickmenu] Missing payload.");
+        return;
+    }
+
+    if (quickmenu) {
+        quickmenu.destroy();
+        quickmenu = null;
+    }
+
+    quickmenu = new QuickMenu(data.payload);
+    quickmenu.append_to("#ui_focus");
+};
+
+HANDLERS.close_quickmenu = () => {
+    if (quickmenu) {
+        quickmenu.destroy();
+        quickmenu = null;
+    }
+};
+
+HANDLERS.open_radial = (data) => {
+    if (!data || !data.payload || !data.payload.sections) {
+        console.warn("[OPEN_RADIAL] Missing sections payload.");
+        return;
+    }
+
+    try {
+        radial = new RadialMenu({
+            sections: data.payload.sections
+        });
+    } catch (e) {
+        console.warn("[OPEN_RADIAL] RadialMenu constructor failed:", e);
+        radial = null;
+        return;
+    }
+
+    radial.open();
+};
+
+HANDLERS.close_radial = () => {
+    if (!radial) {
+        console.warn("[CLOSE_RADIAL] Radial not initialized");
+        return;
+    }
+    radial.close();
+};
+
+/** Utility */
+
+HANDLERS.copy_to_clipboard = (data) => {
+    const el = document.createElement('textarea');
+    el.value = data.string;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+};
+
 /**
  * Global message listener for all NUI messages.
  * Routes each message to its corresponding handler.
  */
 window.addEventListener("message", (event) => {
-    const { func } = event.data;
+    const data = event.data;
+    if (!data) return;
+
+    if (data.type === "qm_nav" && quickmenu) {
+        quickmenu.handle_nav_input(data.input);
+        return;
+    }
+
+    if (data.type === "qm_update" && quickmenu) {
+        quickmenu.update_dynamic_level(data.id, { items: data.items, title: data.title });
+        return;
+    }
+
+    const { func } = data;
+    if (!func) return;
+
     const handler = HANDLERS[func];
 
     if (typeof handler !== "function") {
@@ -185,5 +267,5 @@ window.addEventListener("message", (event) => {
         return;
     }
 
-    handler(event.data);
+    handler(data);
 });

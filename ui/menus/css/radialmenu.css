@@ -1,0 +1,106 @@
+/*
+----------------------------------------
+RIG Framework (built for CFX Platforms)
+
+Author: Case (https://caseirl.dev)
+Repo: https://github.com/rig-fivem/rig
+License: https://github.com/rig-fivem/rig/blob/main/LICENSE
+----------------------------------------
+*/
+
+.radial_menu_container {
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+}
+
+.radial_menu_container.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.radial_menu_svg {
+    display: block;
+    width: 500px;
+    height: 500px;
+    transform-origin: center;
+    pointer-events: auto;
+}
+
+.radial_slice {
+    fill: var(--background_panel);
+    stroke: rgba(255, 255, 255, 0.06);
+    stroke-width: 1;
+    cursor: pointer;
+    transition: fill 0.15s, stroke 0.15s;
+}
+
+.radial_slice:hover {
+    fill: var(--background_hover);
+    stroke: var(--radial_color, var(--accent));
+}
+
+.radial_default { --radial_color: var(--default); }
+.radial_success { --radial_color: var(--success); }
+.radial_error { --radial_color: var(--error); }
+.radial_info { --radial_color: var(--info); }
+.radial_warning { --radial_color: var(--warning); }
+.radial_primary { --radial_color: var(--primary); }
+
+.radial_icon_group i {
+    font-size: 0.85rem;
+    color: var(--text_secondary);
+    transition: color 0.15s;
+}
+
+.radial_slice:hover + .radial_icon_group i,
+.radial_icon_group:hover i {
+    color: var(--radial_color, var(--accent));
+}
+
+.radial_center {
+    fill: var(--background_main);
+    stroke: var(--accent);
+    stroke-width: 1;
+    cursor: pointer;
+    transition: fill 0.15s;
+}
+
+.radial_center:hover {
+    fill: var(--background_hover);
+}
+
+.radial_center_label_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.radial_center_label {
+    height: 100%;
+    font-family: var(--header_font);
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    text-align: center;
+    word-wrap: break-word;
+    line-height: 1.2;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}

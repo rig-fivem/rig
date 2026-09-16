@@ -13,7 +13,7 @@ import { InventorySlot } from "./inventory_slot.js";
 import { InventoryGrid } from "./inventory_grid.js";
 import { Hotbar } from "./hotbar.js";
 import { InputGroups } from "./input_groups.js";
-import { send_nui_callback } from "../helpers.js";
+import { send_nui_callback } from "../../../helpers.js";
 
 const HOTBAR_SECTION = "hotbar";
 

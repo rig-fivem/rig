@@ -46,3 +46,13 @@ export function get_base_path() {
     const match = url.pathname.match(/^(.*?)(\/ui\/)/);
     return match ? match[1] : "";
 }
+
+export function escape_html(value) {
+    if (value === undefined || value === null) return "";
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}

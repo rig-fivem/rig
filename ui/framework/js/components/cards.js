@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { Buttons } from "../components/buttons.js"
-import { resolve_image_path } from "../helpers.js"
+import { resolve_image_path } from "../../../helpers.js"
 
 export class Cards {
     constructor({ title = "", search = null, layout = {}, cards = [] }) {

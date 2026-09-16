@@ -24,6 +24,8 @@ end
 local m = {}
 _G.__client_nui_module = m
 
+local is_quickmenu_open = false
+local is_radial_open = false
 local functions = {}
 
 --- @section Functions
@@ -69,6 +71,38 @@ function m.sanitize(data, path)
     end
 
     return out
+end
+
+function m.send_nav(input)
+    SendNUIMessage({ type = "qm_nav", input = input })
+end
+
+function m.start_nav_thread()
+    local KEYS = {
+        ["enter"] = 191,
+        ["escape"] = 322,
+        ["backspace"] = 177,
+        ["arrowup"] = 172,
+        ["arrowdown"] = 173,
+    }
+
+    CreateThread(function()
+        while is_quickmenu_open do
+            Wait(0)
+
+            if IsControlJustPressed(0, KEYS["arrowup"]) then
+                m.send_nav("up")
+            elseif IsControlJustPressed(0, KEYS["arrowdown"]) then
+                m.send_nav("down")
+            elseif IsControlJustPressed(0, KEYS["enter"]) then
+                m.send_nav("select")
+            elseif IsControlJustPressed(0, KEYS["backspace"]) then
+                m.send_nav("back")
+            elseif IsControlJustPressed(0, KEYS["escape"]) then
+                m.close_quickmenu()
+            end
+        end
+    end)
 end
 
 --- @section Notify
@@ -314,6 +348,82 @@ function m.inventory_popup(data)
     })
 end
 
+--- @section Menus
+
+function m.open_quickmenu(payload)
+    if type(payload) ~= "table" then
+        log("error", "quickmenu: open() requires a table payload")
+        return
+    end
+
+    if is_quickmenu_open then
+        m.close_quickmenu()
+    end
+
+    local sanitized = m.sanitize(payload)
+
+    is_quickmenu_open = true
+
+    SendNUIMessage({ func = "build_quickmenu", payload = sanitized })
+
+    m.start_nav_thread()
+end
+
+function m.close_quickmenu()
+    if not is_quickmenu_open then return end
+
+    is_quickmenu_open = false
+
+    SendNUIMessage({ func = "close_quickmenu" })
+end
+
+function m.is_quickmenu_open()
+    return is_quickmenu_open
+end
+
+function m.push_quickmenu_update(id, items, title)
+    if not is_quickmenu_open then return end
+    SendNUIMessage({ type = "qm_update", id = id, items = items, title = title })
+end
+
+function m.open_radial(sections)
+    if is_radial_open then return end
+    if not sections then
+        log("error", "nui: open_radial called with missing sections")
+        return
+    end
+
+    local safe_sections = m.sanitize({ sections = sections }, "radial")
+    if not safe_sections then
+        log("error", "nui: open_radial sanitize failed")
+        return
+    end
+
+    is_radial_open = true
+    SetNuiFocus(true, true)
+    SetCursorLocation(0.5, 0.5)
+    SendNUIMessage({ func = "open_radial", payload = safe_sections })
+end
+
+function m.close_radial()
+    if not is_radial_open then return end
+
+    is_radial_open = false
+    SetNuiFocus(false, false)
+    SendNUIMessage({ func = "close_radial" })
+end
+
+function m.is_radial_open()
+    return is_radial_open
+end
+
+--- @section Utility
+
+function m.copy_to_clipboard(string)
+    if not string then return end
+    SendNUIMessage({ func = "copy_to_clipboard", string = string })
+end
+
 --- @section NUI Callbacks
 
 RegisterNUICallback("nui:remove_focus", function()
@@ -359,9 +469,24 @@ RegisterNUICallback("nui:handler", function(data, cb)
     end
 
     if data.should_close then
+
+        if is_quickmenu_open then
+            m.close_quickmenu()
+        end
+
+        if is_radial_open then
+            m.close_radial()
+        end
+
         SetNuiFocus(false, false)
     end
 
+    if cb then cb(true) end
+end)
+
+RegisterNUICallback("nui:close_radial", function(data, cb)
+    is_radial_open = false
+    SetNuiFocus(false, false)
     if cb then cb(true) end
 end)
 
@@ -398,6 +523,38 @@ RegisterNetEvent("rig:client:close_ui", function()
     m.close_ui()
 end)
 
+RegisterNetEvent("rig:client:open_quickmenu", function(menu_data)
+    if not menu_data then return end
+    m.open_quickmenu(menu_data)
+end)
+
+RegisterNetEvent("rig:client:close_quickmenu", function()
+    m.close_quickmenu()
+end)
+
+RegisterNetEvent("rig:client:push_quickmenu_update", function(id, items, title)
+    if not id or not items or not title then return end
+    m.push_quickmenu_update()
+end)
+
+RegisterNetEvent("rig:client:build_radial", function(sections)
+    if not sections then return end
+    m.build_radial(sections)
+end)
+
+RegisterNetEvent("rig:client:open_radial", function()
+    m.open_radial()
+end)
+
+RegisterNetEvent("rig:client:close_radial", function()
+    m.close_radial()
+end)
+
+RegisterNetEvent("rig:client:copy_to_clipboard", function(string)
+    if not string then return end
+    m.copy_to_clipboard(string)
+end)
+
 --- @section Exports
 
 exports("notify", m.notify)
@@ -425,5 +582,15 @@ exports("set_slot_move_handler", m.set_slot_move_handler)
 exports("set_grid_move_handler", m.set_grid_move_handler)
 
 exports("get_player_headshot", m.get_player_headshot)
+
+exports("open_quickmenu", m.open_quickmenu)
+exports("close_quickmenu", m.close_quickmenu)
+exports("push_quickmenu_update", m.push_quickmenu_update)
+exports("copy_to_clipboard", m.copy_to_clipboard)
+
+exports("build_radial", m.build_radial)
+exports("open_radial", m.open_radial)
+exports("close_radial", m.close_radial)
+exports("is_radial_open", m.is_radial_open)
 
 return m

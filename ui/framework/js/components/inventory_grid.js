@@ -8,7 +8,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 ----------------------------------------
 */
 
-import { resolve_image_path } from "../helpers.js";
+import { resolve_image_path } from "../../../helpers.js";
 
 export class InventoryGrid {
     constructor({ title = "", layout = {}, on_move = null, on_drop_to_slot = null, section_key = null, items = [], draggable = true } = {}) {

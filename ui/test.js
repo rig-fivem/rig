@@ -10,6 +10,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 
 import { UIBuilder } from "./framework/js/main.js";
 import { SlotPopup } from "./framework/js/components/inventory_popup.js";
+import { RadialMenu } from "./menus/js/radialmenu.js";
 
 const GRID_MODE = true;
 
@@ -863,4 +864,29 @@ $(document).ready(() => {
         }
     });
 });
+*/
+
+/*
+const radial = new RadialMenu({
+    sections: [
+        { 
+            id: "vehicle", 
+            label: "Vehicle", 
+            icon: "fa-solid fa-car", 
+            type: "primary",
+            submenu: [
+                { id: "vehicle_spawn", label: "Spawn", icon: "fa-solid fa-plus", type: "success", action: "vehicle_spawn" },
+                { id: "vehicle_delete", label: "Delete", icon: "fa-solid fa-trash", type: "error", action: "vehicle_delete" },
+                { id: "vehicle_tune", label: "Tune", icon: "fa-solid fa-wrench", type: "info", action: "vehicle_tune" }
+            ]
+        },
+        { id: "animation", label: "Animation", icon: "fa-solid fa-person", type: "success" },
+        { id: "emotes", label: "Emotes", icon: "fa-solid fa-face-smile", type: "warning" },
+        { id: "settings", label: "Settings", icon: "fa-solid fa-gear", type: "info" },
+        { id: "emotes2", label: "Emotes", icon: "fa-solid fa-face-smile", type: "warning" },
+        { id: "settings2", label: "Settings", icon: "fa-solid fa-gear", type: "info" }
+    ]
+});
+
+radial.open();
 */

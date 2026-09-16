@@ -9,7 +9,7 @@ License: https://github.com/rig-fivem/rig/blob/main/LICENSE
 */
 
 import { Buttons } from "./buttons.js"
-import { send_nui_callback } from "../helpers.js";
+import { send_nui_callback } from "../../../helpers.js";
 
 export class InputGroups {
     constructor({ id = "", title = "Input Groups", groups = [], buttons = [], layout = {} }) {
